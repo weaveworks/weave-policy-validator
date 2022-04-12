@@ -1,0 +1,3 @@
+replica_count: 2
+allow_privilege_escalation: false
+privilege: false
