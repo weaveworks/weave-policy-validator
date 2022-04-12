@@ -112,7 +112,7 @@ func (n *Node) GetField(path string, exact bool) *Field {
 }
 
 func (n *Node) SetField(path string, value interface{}) error {
-	_, vnode := getByKeyPath(n.node, path, true, true)
+	_, vnode := getByKeyPath(n.node, path, true, false)
 	return vnode.Encode(value)
 }
 

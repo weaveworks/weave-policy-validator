@@ -62,6 +62,11 @@ func (obj *Object) ID() string {
 
 // GetField get field from key path
 func (obj *Object) GetField(key string) *yaml.Field {
+	return obj.node.GetField(key, true)
+}
+
+// GetNearestField field or its nearest parent from key path
+func (obj *Object) GetNearestField(key string) *yaml.Field {
 	return obj.node.GetField(key, false)
 }
 

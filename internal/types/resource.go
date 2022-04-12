@@ -1,5 +1,7 @@
 package types
 
+import "encoding/json"
+
 type RemediationHint struct {
 	ViolatingKey     *string
 	RecommendedValue interface{}
@@ -15,13 +17,19 @@ func (r *Resource) FindKey(key string) (int, int) {
 	if obj == nil {
 		obj = r.Rendered
 	}
-	if f := obj.GetField(key); f != nil {
+
+	if f := obj.GetNearestField(key); f != nil {
 		return f.Key.StartLine, f.Value.EndLine
 	}
+
 	return obj.node.StartLine, obj.node.EndLine
 }
 
 func (r *Resource) Remediate(key string, value interface{}) (bool, error) {
+	if number, ok := value.(json.Number); ok {
+		value, _ = number.Float64()
+	}
+
 	if r.Raw == nil {
 		return false, nil
 	}
