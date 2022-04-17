@@ -2,7 +2,7 @@ package kustomization
 
 import (
 	"context"
-	"fmt"
+	"errors"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 )
@@ -35,5 +35,5 @@ func GetKustomizerFromPath(path string) (Kustomizer, error) {
 		return kubernetes, nil
 	}
 
-	return nil, fmt.Errorf("path is not recognized as a kustomization valid path")
+	return nil, errors.New("path is not recognized as a kustomization valid path")
 }

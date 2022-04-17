@@ -91,8 +91,7 @@ func (r *GitRepository) OpenPullRequest(ctx context.Context, base, sha string, f
 	return pull, nil
 }
 
-// CreateReport its behaviour depends on the git provider
-// in case of github, it will create checkrun
+// CreateReport executes the provider's CreateReport
 func (r *GitRepository) CreateReport(ctx context.Context, sha string, result types.Result) error {
 	return r.provider.CreateReport(ctx, sha, result)
 }

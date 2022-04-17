@@ -50,6 +50,5 @@ workflows:
               only:
                 - main
                 - dev
-                - test
             tags:
               only: /^v.*/

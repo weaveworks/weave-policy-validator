@@ -20,22 +20,22 @@ type Object struct {
 	node *yaml.Node
 }
 
-// NewObject create new object
+// NewObject creates new object
 func NewObject(node *yaml.Node) *Object {
 	return &Object{node: node}
 }
 
-// ApiVersion gets apiVersion
+// ApiVersion returns apiVersion
 func (obj *Object) ApiVersion() string {
 	return obj.getFieldValue(ApiVersionField)
 }
 
-// Kind gets object kind
+// Kind returns object kind
 func (obj *Object) Kind() string {
 	return obj.getFieldValue(KindField)
 }
 
-// Namespace gets object namespace
+// Namespace returns object namespace
 func (obj *Object) Namespace() string {
 	namespace := obj.getFieldValue(NamespaceField)
 	if namespace == "" {
@@ -44,12 +44,12 @@ func (obj *Object) Namespace() string {
 	return namespace
 }
 
-// Name gets object name
+// Name returns object name
 func (obj *Object) Name() string {
 	return obj.getFieldValue(NameField)
 }
 
-// ID get object id
+// ID returns object id
 func (obj *Object) ID() string {
 	parts := []string{
 		obj.ApiVersion(),
@@ -60,22 +60,22 @@ func (obj *Object) ID() string {
 	return strings.Join(parts, seperator)
 }
 
-// GetField get field from key path
+// GetField gets field from key path
 func (obj *Object) GetField(key string) *yaml.Field {
 	return obj.node.GetField(key, true)
 }
 
-// GetNearestField field or its nearest parent from key path
+// GetNearestField gets field or its nearest parent from key path
 func (obj *Object) GetNearestField(key string) *yaml.Field {
 	return obj.node.GetField(key, false)
 }
 
-// SetField set field value
+// SetField sets field value
 func (obj *Object) SetField(key string, value interface{}) error {
 	return obj.node.SetField(key, value)
 }
 
-// Entity convert object to entity
+// Entity converts object to entity
 func (obj *Object) Entity() (domain.Entity, error) {
 	spec, err := obj.node.Map()
 	if err != nil {
@@ -84,7 +84,7 @@ func (obj *Object) Entity() (domain.Entity, error) {
 	return domain.NewEntityFromSpec(spec), nil
 }
 
-// Policy convert object to policy
+// Policy converts object to policy
 func (obj *Object) Policy() (domain.Policy, error) {
 	var policy domain.Policy
 

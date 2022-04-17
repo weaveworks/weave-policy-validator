@@ -10,7 +10,7 @@ type File struct {
 	Resources  map[string]*Resource
 }
 
-// NewFile create new empty file
+// NewFile creates new empty file
 func NewFile(path string) *File {
 	return &File{
 		Path:      path,
@@ -18,7 +18,7 @@ func NewFile(path string) *File {
 	}
 }
 
-// NewFileFromPath create new file from given path
+// NewFileFromPath creates new file from given path
 func NewFileFromPath(path string) (*File, error) {
 	nodes, err := yaml.MultiDocFromFile(path)
 	if err != nil {
@@ -39,18 +39,18 @@ func NewFileFromPath(path string) (*File, error) {
 	}, nil
 }
 
-// ResourceExists checks if resource exists in the file
+// ResourceExists checks if a resource exists in the file
 func (f *File) ResourceExists(id string) bool {
 	_, found := f.Resources[id]
 	return found
 }
 
-// SetRenderedObject sets rendered object
-func (f *File) SetRenderedObject(obj *Object) {
+// SetResourceRenderedObject sets rendered object
+func (f *File) SetResourceRenderedObject(obj *Object) {
 	f.Resources[obj.ID()].Rendered = obj
 }
 
-// Content return file content in string format
+// Content returns file content in string format
 func (f *File) Content() (string, error) {
 	var nodes []*yaml.Node
 	for _, resource := range f.Resources {

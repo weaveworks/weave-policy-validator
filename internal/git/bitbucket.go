@@ -19,17 +19,11 @@ const (
 
 type BitbucketProvider struct {
 	client *bitbucket.Client
-	owner  string
-	repo   string
-	token  string
 }
 
 func newBitbucketProvider(owner, repo, token string) (*BitbucketProvider, error) {
 	return &BitbucketProvider{
 		client: bitbucket.NewClient(owner, repo, token),
-		owner:  owner,
-		repo:   repo,
-		token:  token,
 	}, nil
 }
 
@@ -93,7 +87,7 @@ func (bb *BitbucketProvider) CreateCommit(ctx context.Context, branch, message s
 	return nil
 }
 
-// CreatePullRequest creates pull request, not implemented yet
+// CreatePullRequest creates pull request
 func (bb *BitbucketProvider) CreatePullRequest(ctx context.Context, source, target, title, description string) (*string, error) {
 	opts := bitbucket.CreatePullRequestOptions{
 		Title: title,

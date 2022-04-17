@@ -5,7 +5,72 @@ const (
 	version = "2.1.0"
 )
 
-// New create new report
+type Report struct {
+	Schema  string `json:"$schema"`
+	Version string `json:"version"`
+	Runs    []*Run `json:"runs"`
+}
+
+type Run struct {
+	Tool    Tool      `json:"tool"`
+	Results []*Result `json:"results"`
+}
+
+type Tool struct {
+	Driver Driver `json:"driver"`
+}
+
+type Driver struct {
+	Name    string `json:"name"`
+	Rules   []Rule `json:"rules"`
+	ruleMap map[string]bool
+}
+
+type Text struct {
+	Text string `json:"text"`
+}
+
+type Rule struct {
+	ID               string `json:"id"`
+	Name             string `json:"name"`
+	ShortDescription Text   `json:"shortDescription"`
+	FullDescription  Text   `json:"fullDescription"`
+	Help             Text   `json:"help"`
+}
+
+type Result struct {
+	RuleID              string              `json:"ruleId"`
+	Message             Text                `json:"message"`
+	Locations           []Location          `json:"locations"`
+	Level               string              `json:"level"`
+	PartialFingerprints PartialFingerprints `json:"partialFingerprints"`
+}
+
+type Location struct {
+	PhysicalLocation PhysicalLocation `json:"physicalLocation"`
+}
+
+type PhysicalLocation struct {
+	ArtifactLocation ArtifactLocation `json:"artifactLocation"`
+	Region           Region           `json:"region"`
+}
+
+type ArtifactLocation struct {
+	URI string `json:"uri"`
+}
+
+type Region struct {
+	StartLine   int `json:"startLine"`
+	EndLine     int `json:"endLine"`
+	StartColumn int `json:"startColumn"`
+	EndColumn   int `json:"endColumn"`
+}
+
+type PartialFingerprints struct {
+	PrimaryLocationLineHash string `json:"primaryLocationLineHash"`
+}
+
+// New creates a new report
 func New() *Report {
 	return &Report{
 		Schema:  schema,
@@ -14,7 +79,7 @@ func New() *Report {
 	}
 }
 
-// AddRun add new run
+// AddRun adds a new run to the report
 func (rprt *Report) AddRun(name string) *Run {
 	run := &Run{
 		Tool: Tool{
@@ -30,7 +95,7 @@ func (rprt *Report) AddRun(name string) *Run {
 	return run
 }
 
-// AddRun add new rule
+// AddRule adds a new rule to the report
 func (rn *Run) AddRule(id, name, description, help string) *Rule {
 	rule := Rule{
 		ID:   id,
@@ -49,7 +114,7 @@ func (rn *Run) AddRule(id, name, description, help string) *Rule {
 	return &rule
 }
 
-// AddRun add result
+// AddResult adds a new result to the report
 func (rn *Run) AddResult(ruleID, message, level string) *Result {
 	result := &Result{
 		RuleID: ruleID,
@@ -62,7 +127,7 @@ func (rn *Run) AddResult(ruleID, message, level string) *Result {
 	return result
 }
 
-// SetResultLocation set violation location
+// SetResultLocation sets violation location
 func (rs *Result) SetResultLocation(file string, startLine, endLine int) *Result {
 	location := Location{
 		PhysicalLocation: PhysicalLocation{

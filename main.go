@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -50,19 +51,19 @@ type Config struct {
 
 func (c *Config) ValidateGitRepositoryConf() error {
 	if c.GitRepositoryProvider == "" {
-		return fmt.Errorf("missing git-repo-provider value")
+		return errors.New("missing git-repo-provider value")
 	}
 	if c.GitRepositoryURL == "" {
-		return fmt.Errorf("missing git-repo-url value")
+		return errors.New("missing git-repo-url value")
 	}
 	if c.GitRepositoryBranch == "" {
-		return fmt.Errorf("missing git-repo-branch value")
+		return errors.New("missing git-repo-branch value")
 	}
 	if c.GitRepositorySHA == "" {
-		return fmt.Errorf("missing git-repo-sha value")
+		return errors.New("missing git-repo-sha value")
 	}
 	if c.GitRepositoryToken == "" {
-		return fmt.Errorf("missing git-repo-token value")
+		return errors.New("missing git-repo-token value")
 	}
 	return nil
 }
@@ -250,7 +251,7 @@ func App(ctx context.Context, conf Config) error {
 	if conf.SARIFOutputFile != "" {
 		sarif, err := result.SARIF()
 		if err != nil {
-			return fmt.Errorf("failed to export result as sarif")
+			return fmt.Errorf("failed to export result as sarif, error: %v", err)
 		}
 		err = saveOutputFile(conf.SARIFOutputFile, sarif)
 		if err != nil {
@@ -261,7 +262,7 @@ func App(ctx context.Context, conf Config) error {
 	if conf.SASTOutputFile != "" {
 		sast, err := result.SAST()
 		if err != nil {
-			return fmt.Errorf("failed to export result as sast")
+			return fmt.Errorf("failed to export result as sast, error: %v", err)
 		}
 		err = saveOutputFile(conf.SASTOutputFile, sast)
 		if err != nil {
@@ -272,7 +273,7 @@ func App(ctx context.Context, conf Config) error {
 	if conf.JSONOutputFile != "" {
 		js, err := result.JSON()
 		if err != nil {
-			return fmt.Errorf("failed to export result as json")
+			return fmt.Errorf("failed to export result as json, error: %v", err)
 		}
 		err = saveOutputFile(conf.JSONOutputFile, js)
 		if err != nil {

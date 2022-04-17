@@ -2,6 +2,7 @@ package git
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
@@ -16,7 +17,7 @@ type GitlabProvider struct {
 func newGitlabProvider(owenr, repo, token string) (*GitlabProvider, error) {
 	client, err := gitlab.NewClient(token)
 	if err != nil {
-		return nil, fmt.Errorf("failed to init gitlab client")
+		return nil, fmt.Errorf("failed to init gitlab client, error: %v", err)
 	}
 
 	return &GitlabProvider{
@@ -106,5 +107,5 @@ func (gl *GitlabProvider) CreatePullRequest(ctx context.Context, source, target,
 
 // CreateReport not implemented
 func (gl *GitlabProvider) CreateReport(ctx context.Context, sha string, result types.Result) error {
-	return nil
+	return errors.New("not implemented")
 }

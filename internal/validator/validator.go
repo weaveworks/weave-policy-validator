@@ -20,7 +20,7 @@ func NewValidator(validator validation.Validator, remediate bool) *Validator {
 	}
 }
 
-// Validate validates resources
+// Validate validates resources against policies
 func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.Result, error) {
 	results := types.Result{
 		Violations: []types.Violation{},

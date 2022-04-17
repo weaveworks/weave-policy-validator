@@ -108,7 +108,7 @@ func (k *Kustomize) ResourceFiles(_ context.Context) ([]*types.File, error) {
 			obj := types.NewObject(nodes[i])
 			for _, file := range files {
 				if file.ResourceExists(k.getObjOriginalID(obj.ID())) {
-					file.SetRenderedObject(obj)
+					file.SetResourceRenderedObject(obj)
 					break
 				}
 			}

@@ -34,7 +34,7 @@ func Unmarshal(in []byte, out interface{}) error {
 	return yaml.Unmarshal(in, out)
 }
 
-// SingleDocFromFile load file from path and return its first document
+// SingleDocFromFile loads file from path and returns its first document
 func SingleDocFromFile(path string) (*Node, error) {
 	in, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -50,7 +50,7 @@ func SingleDocFromFile(path string) (*Node, error) {
 	return newNode(&node), nil
 }
 
-// MultiDocFromFile load file from path and return all its documents
+// MultiDocFromFile loads file from path and returns all its documents
 func MultiDocFromFile(path string) ([]*Node, error) {
 	in, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -59,10 +59,12 @@ func MultiDocFromFile(path string) ([]*Node, error) {
 	return FromBytes(in)
 }
 
+// FromString loads yaml documents from string
 func FromString(in string) ([]*Node, error) {
 	return FromBytes([]byte(in))
 }
 
+// FromBytes loads yaml documents from bytes
 func FromBytes(in []byte) ([]*Node, error) {
 	var nodes []*Node
 	reader := bytes.NewReader(in)
@@ -80,6 +82,7 @@ func FromBytes(in []byte) ([]*Node, error) {
 	return nodes, nil
 }
 
+// Bytes encodes multiple yaml documents into bytes
 func Bytes(nodes []*Node) ([]byte, error) {
 	var buf bytes.Buffer
 	encoder := yaml.NewEncoder(&buf)
@@ -96,10 +99,12 @@ func Bytes(nodes []*Node) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// Value returns node's value
 func (n *Node) Value() string {
 	return n.node.Value
 }
 
+// GetField gets field object by its json path
 func (n *Node) GetField(path string, exact bool) *Field {
 	knode, vnode := getByKeyPath(n.node, path, false, exact)
 	if knode == nil || vnode == nil {
@@ -111,11 +116,13 @@ func (n *Node) GetField(path string, exact bool) *Field {
 	}
 }
 
+// SetField sets field object value
 func (n *Node) SetField(path string, value interface{}) error {
 	_, vnode := getByKeyPath(n.node, path, true, false)
 	return vnode.Encode(value)
 }
 
+// Map decodes the node object into map
 func (n *Node) Map() (map[string]interface{}, error) {
 	var m map[string]interface{}
 	err := n.node.Decode(&m)
