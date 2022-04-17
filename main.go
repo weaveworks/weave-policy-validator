@@ -79,18 +79,18 @@ func main() {
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:        "path",
-			Usage:       "path to resources kustomization",
+			Usage:       "path to resources kustomization directory",
 			Destination: &conf.EntityKustomizeConf.Path,
 			Required:    true,
 		},
 		&cli.StringFlag{
 			Name:        "helm-values-file",
-			Usage:       "path to helm values file",
+			Usage:       "path to resources helm values file",
 			Destination: &conf.EntityKustomizeConf.HelmValuesFile,
 		},
 		&cli.StringFlag{
 			Name:        "policies-path",
-			Usage:       "path to policies kustomization",
+			Usage:       "path to policies kustomization directory",
 			Required:    true,
 			Destination: &conf.PoliciesKustomizeConf.Path,
 		},
@@ -101,31 +101,31 @@ func main() {
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-provider",
-			Usage:       "git repo provider",
+			Usage:       "git repository provider",
 			Destination: &conf.GitRepositoryProvider,
 			EnvVars:     []string{"WEAVE_REPO_PROVIDER"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-url",
-			Usage:       "git repo url",
+			Usage:       "git repository url",
 			Destination: &conf.GitRepositoryURL,
 			EnvVars:     []string{"WEAVE_REPO_URL"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-branch",
-			Usage:       "git repo branch",
+			Usage:       "git repository branch",
 			Destination: &conf.GitRepositoryBranch,
 			EnvVars:     []string{"WEAVE_REPO_BRANCH"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-sha",
-			Usage:       "git repo sha",
+			Usage:       "git repository commit sha",
 			Destination: &conf.GitRepositorySHA,
 			EnvVars:     []string{"WEAVE_REPO_SHA"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-token",
-			Usage:       "git repo token",
+			Usage:       "git repository token",
 			Destination: &conf.GitRepositoryToken,
 			EnvVars:     []string{"WEAVE_REPO_TOKEN"},
 		},

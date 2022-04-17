@@ -99,6 +99,7 @@ type Client struct {
 	token      string
 }
 
+// NewClient returns new client
 func NewClient(owner, repository, token string) *Client {
 	return &Client{
 		owner:      owner,
@@ -107,6 +108,7 @@ func NewClient(owner, repository, token string) *Client {
 	}
 }
 
+// GetBranch gets branch by its name
 func (cl *Client) GetBranch(ctx context.Context, name string) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/refs/branches/%s", apiURL, cl.owner, cl.repository, name)
 	req, err := http.NewRequest("GET", url, nil)
@@ -120,6 +122,7 @@ func (cl *Client) GetBranch(ctx context.Context, name string) (*http.Response, e
 	return client.Do(req)
 }
 
+// CreateBranch creates new branch
 func (cl *Client) CreateBranch(ctx context.Context, opts CreateBranchOptions) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/refs/branches", apiURL, cl.owner, cl.repository)
 	body, err := json.Marshal(opts)
@@ -139,6 +142,7 @@ func (cl *Client) CreateBranch(ctx context.Context, opts CreateBranchOptions) (*
 	return client.Do(req)
 }
 
+// CreateCommit creates new commit
 func (cl *Client) CreateCommit(ctx context.Context, opts CreateCommitOptions) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/src", apiURL, cl.owner, cl.repository)
 
@@ -167,6 +171,7 @@ func (cl *Client) CreateCommit(ctx context.Context, opts CreateCommitOptions) (*
 	return client.Do(req)
 }
 
+// CreatePullRequest creates new pull request
 func (cl *Client) CreatePullRequest(ctx context.Context, opts CreatePullRequestOptions) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/pullrequests", apiURL, cl.owner, cl.repository)
 	body, err := json.Marshal(opts)
@@ -186,6 +191,7 @@ func (cl *Client) CreatePullRequest(ctx context.Context, opts CreatePullRequestO
 	return client.Do(req)
 }
 
+// CreateReport creates new report
 func (cl *Client) CreateReport(ctx context.Context, opts CreateReportOptions) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/commit/%s/reports/%s", apiURL, cl.owner, cl.repository, opts.SHA, opts.ID)
 	body, err := json.Marshal(opts)
@@ -205,6 +211,7 @@ func (cl *Client) CreateReport(ctx context.Context, opts CreateReportOptions) (*
 	return client.Do(req)
 }
 
+// AddAnnotationToReport adds annotations to report
 func (cl *Client) AddAnnotationToReport(ctx context.Context, sha string, id string, annotations []ReportAnnotation) (*http.Response, error) {
 	url := fmt.Sprintf("%s/repositories/%s/%s/commit/%s/reports/%s/annotations", apiURL, cl.owner, cl.repository, sha, id)
 
