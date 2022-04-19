@@ -1,0 +1,54 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/golang:1.17
+    steps:
+      - checkout
+      - run:
+          name: Build binary 
+          command: |
+            make build
+      - run:
+          name: Run tests 
+          command: |
+            make test
+      - run:
+          name: Upload test coverage 
+          command: |
+            bash <(curl -s https://codecov.io/bash) -F unit
+  release:
+    docker:
+      - image: circleci/golang:1.17
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build binary
+          command: |
+            make build
+      - run:
+          name: Build and push image
+          command: |
+            TAG=${CIRCLE_TAG:-$CIRCLE_BRANCH}
+            docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+            docker build . -t magalixcorp/weave-validator:${TAG}
+            docker push magalixcorp/weave-validator:${TAG}
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - test:
+          context: org-global
+      - release:
+          context: org-global
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - main
+                - dev
+            tags:
+              only: /^v.*/

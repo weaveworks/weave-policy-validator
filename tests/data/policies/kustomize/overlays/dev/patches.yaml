@@ -1,0 +1,36 @@
+apiVersion: magalix.com/v1
+kind: Policy
+metadata:
+  name: magalix.policies.containers-minimum-replica-count
+spec:
+  parameters:
+  - name: replica_count
+    type: integer
+    required: true
+    value: 1
+
+--- 
+
+apiVersion: magalix.com/v1
+kind: Policy
+metadata:
+  name: magalix.policies.containers-running-with-privilege-escalation
+spec:
+  parameters:
+  - name: allow_privilege_escalation
+    type: boolean
+    required: true
+    value: true
+
+---
+
+apiVersion: magalix.com/v1
+kind: Policy
+metadata:
+  name: magalix.policies.containers-running-in-privileged-mode
+spec:
+  parameters:
+  - name: privilege
+    type: boolean
+    required: true
+    value: true
