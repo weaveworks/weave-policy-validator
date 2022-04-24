@@ -72,10 +72,7 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 
 					if v.remediate && result.Details.RecommendedValue != nil {
 						remediated, err := resource.Remediate(*result.Details.ViolatingKey, result.Details.RecommendedValue)
-						if err != nil {
-							return nil, err
-						}
-						if remediated {
+						if err == nil && remediated {
 							file.Remediated = true
 							resource.Remediated = true
 							results.Remediated++
