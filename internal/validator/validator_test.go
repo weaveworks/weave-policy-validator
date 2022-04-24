@@ -58,7 +58,7 @@ func TestValidator(t *testing.T) {
 			result: types.Result{
 				Scanned:        2,
 				ViolationCount: 6,
-				Remediated:     6,
+				Remediated:     0,
 			},
 		},
 		{
@@ -69,7 +69,7 @@ func TestValidator(t *testing.T) {
 			result: types.Result{
 				Scanned:        2,
 				ViolationCount: 4,
-				Remediated:     4,
+				Remediated:     0,
 			},
 		},
 		{
