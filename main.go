@@ -221,7 +221,7 @@ func App(ctx context.Context, conf Config) error {
 		return fmt.Errorf("failed to validate resources, error: %v", err)
 	}
 
-	fmt.Println(result.TEXT())
+	result.Print()
 
 	if conf.Remediate && !git.IsRemediationBranch(conf.GitRepositoryBranch) {
 		var remediatedFiles []*types.File

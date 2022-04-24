@@ -8,12 +8,8 @@ import (
 )
 
 const (
-	ApiVersionField = "apiVersion"
-	KindField       = "kind"
-	NamespaceField  = "metadata.namespace"
-	NameField       = "metadata.name"
-	SpecField       = "spec"
-	seperator       = "/"
+	SpecField = "spec"
+	seperator = "/"
 )
 
 type Object struct {
@@ -27,17 +23,17 @@ func NewObject(node *yaml.Node) *Object {
 
 // ApiVersion returns apiVersion
 func (obj *Object) ApiVersion() string {
-	return obj.getFieldValue(ApiVersionField)
+	return obj.node.GetApiVersion()
 }
 
 // Kind returns object kind
 func (obj *Object) Kind() string {
-	return obj.getFieldValue(KindField)
+	return obj.node.GetKind()
 }
 
 // Namespace returns object namespace
 func (obj *Object) Namespace() string {
-	namespace := obj.getFieldValue(NamespaceField)
+	namespace := obj.node.GetNamespace()
 	if namespace == "" {
 		return "[noNamespace]"
 	}
@@ -46,7 +42,7 @@ func (obj *Object) Namespace() string {
 
 // Name returns object name
 func (obj *Object) Name() string {
-	return obj.getFieldValue(NameField)
+	return obj.node.GetName()
 }
 
 // ID returns object id
@@ -61,13 +57,13 @@ func (obj *Object) ID() string {
 }
 
 // GetField gets field from key path
-func (obj *Object) GetField(key string) *yaml.Field {
-	return obj.node.GetField(key, true)
+func (obj *Object) GetField(key string) (*yaml.Node, error) {
+	return obj.node.GetField(key)
 }
 
-// GetNearestField gets field or its nearest parent from key path
-func (obj *Object) GetNearestField(key string) *yaml.Field {
-	return obj.node.GetField(key, false)
+// FindField gets field or its nearest parent from key path
+func (obj *Object) FindField(key string) (*yaml.Node, error) {
+	return obj.node.FindField(key)
 }
 
 // SetField sets field value
@@ -101,12 +97,4 @@ func (obj *Object) Policy() (domain.Policy, error) {
 
 	err = yaml.Unmarshal(in, &policy)
 	return policy, err
-}
-
-func (obj *Object) getFieldValue(key string) string {
-	var value string
-	if f := obj.node.GetField(key, true); f != nil {
-		value = f.Value.Value()
-	}
-	return value
 }

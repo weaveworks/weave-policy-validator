@@ -100,7 +100,7 @@ func (k *Kustomize) ResourceFiles(_ context.Context) ([]*types.File, error) {
 	}
 
 	for _, resource := range resources {
-		nodes, err := yaml.FromString(resource.String())
+		nodes, err := yaml.StringParse(resource.String())
 		if err != nil {
 			return nil, err
 		}
@@ -161,7 +161,7 @@ func parseKustomizationFile(path string) (*KustomizationFile, error) {
 		return nil, err
 	}
 
-	nodes, err := yaml.FromBytes(in)
+	nodes, err := yaml.BytesParse(in)
 	if err != nil {
 		return nil, err
 	}
