@@ -60,31 +60,20 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 
 	var files []*types.File
 	for path, template := range templates {
-		var file *types.File
 		path = normalizePath(h.Path, path, chart.Name())
 
-		file, err = types.NewFileFromPath(path)
-		if err != nil {
-			file = types.NewFile(path)
-		}
-
-		nodes, err := yaml.FromString(template)
+		nodes, err := yaml.StringParse(template)
 		if err != nil {
 			return nil, err
 		}
 
+		file := types.NewFile(path)
 		for i := range nodes {
 			obj := types.NewObject(nodes[i])
-			if file.ResourceExists(obj.ID()) {
-				file.Resources[obj.ID()].Rendered = obj
-			} else {
-				file.Resources[obj.ID()] = &types.Resource{
-					Rendered: obj,
-					Raw:      obj,
-				}
+			file.Resources[obj.ID()] = &types.Resource{
+				Rendered: obj,
 			}
 		}
-
 		files = append(files, file)
 	}
 

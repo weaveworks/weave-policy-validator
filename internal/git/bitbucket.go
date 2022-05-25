@@ -115,7 +115,7 @@ func (bb *BitbucketProvider) CreatePullRequest(ctx context.Context, source, targ
 func (bb *BitbucketProvider) CreateReport(ctx context.Context, sha string, result types.Result) error {
 	opts := bitbucket.CreateReportOptions{
 		ID:       fmt.Sprintf("weave-%s", sha[:7]),
-		Title:    "Weaveworks IaC scan",
+		Title:    "Weaveworks",
 		Details:  fmt.Sprintf("%d scanned resources, %d has violations", result.Scanned, result.ViolationCount),
 		SHA:      sha,
 		Type:     bitbucket.ReportTypeSeurity,

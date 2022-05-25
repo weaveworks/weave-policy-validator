@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/MagalixTechnologies/weave-iac-validator/internal/markdown"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/sarif"
 	sast "gitlab.com/gitlab-org/security-products/analyzers/report/v3"
 )
@@ -59,6 +60,11 @@ type Result struct {
 	Remediated     int         `json:"remediated"`
 	Violations     []Violation `json:"items"`
 	PullRequestURL *string     `json:"pull_request"`
+}
+
+type resultSummary struct {
+	Policy     Policy
+	Violations int
 }
 
 var SARIFSeverityMap = map[string]string{
@@ -161,6 +167,15 @@ func (r *Result) SAST() (string, error) {
 			},
 			Version: scannerVersion,
 		},
+		Analyzer: sast.AnalyzerDetails{
+			ID:   scannerID,
+			Name: scannerName,
+			URL:  scannerURL,
+			Vendor: sast.Vendor{
+				Name: scannerVendor,
+			},
+			Version: scannerVersion,
+		},
 		StartTime: &now,
 		EndTime:   &now,
 	}
@@ -176,7 +191,6 @@ func (r *Result) SAST() (string, error) {
 
 // TEXT return result in text format
 func (r *Result) TEXT() string {
-
 	var output string
 	for i := range r.Violations {
 		violation := r.Violations[i]
@@ -202,8 +216,51 @@ func (r *Result) TEXT() string {
 	return output
 }
 
-func (r *Result) Markdown() string {
-	return ""
+// MarkdowSummary returns result summary in markdown
+func (r *Result) MarkdowSummary() string {
+	summaryMap := make(map[string]resultSummary)
+	for _, violation := range r.Violations {
+		if summary, ok := summaryMap[violation.Policy.ID]; ok {
+			summary.Violations++
+			summaryMap[violation.Policy.ID] = summary
+		} else {
+			summaryMap[violation.Policy.ID] = resultSummary{
+				Policy:     violation.Policy,
+				Violations: 1,
+			}
+		}
+	}
+
+	columns := []string{
+		"Policy",
+		"Category",
+		"Severity",
+		"Violations",
+	}
+
+	rows := [][]string{}
+	for _, item := range summaryMap {
+		rows = append(rows, []string{
+			item.Policy.Name,
+			item.Policy.Category,
+			item.Policy.Severity,
+			fmt.Sprint(item.Violations),
+		})
+	}
+
+	md := markdown.New()
+	md.Head3("Scanned %d resources, found %d violations", r.Scanned, r.ViolationCount)
+	md.Table(columns, rows)
+
+	if r.PullRequestURL != nil {
+		md.Paragraph("This PR %s remediates %d violation(s)", *r.PullRequestURL, r.Remediated)
+	}
+
+	return md.String()
+}
+
+func (r *Result) Print() {
+	fmt.Println(r.TEXT())
 }
 
 func tojson(in interface{}) (string, error) {

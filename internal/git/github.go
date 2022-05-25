@@ -18,6 +18,7 @@ var (
 	githubCheckRunConclusionFailure            = "failure"
 	githubCheckRunAnnotationLevel              = "failure"
 	githubCheckRunMaxAnnotationsPerRequest int = 50
+	githubReportTitle                          = "Weave Result Report"
 )
 
 type GithubProvider struct {
@@ -159,15 +160,13 @@ func (gh *GithubProvider) CreateReport(ctx context.Context, sha string, result t
 		conclusion = githubCheckRunConclusionFailure
 	}
 
-	title := fmt.Sprintf("%d scanned resources, %d has violations", result.Scanned, result.ViolationCount)
-	summary := ""
-
+	summary := result.MarkdowSummary()
 	options := github.CreateCheckRunOptions{
 		Name:       githubCheckRunName,
 		Conclusion: &conclusion,
 		Status:     &githubCheckRunStatusCompleted,
 		Output: &github.CheckRunOutput{
-			Title:   &title,
+			Title:   &githubReportTitle,
 			Summary: &summary,
 		},
 		HeadSHA: sha,
