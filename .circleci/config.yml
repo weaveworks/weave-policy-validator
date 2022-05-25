@@ -51,4 +51,4 @@ workflows:
                 - main
                 - dev
             tags:
-              only: /^v.*/
+              only: /^v.*
