@@ -27,8 +27,17 @@ then
     export WEAVE_REPO_URL="${BITBUCKET_REPO_FULL_NAME}"
     export WEAVE_REPO_BRANCH="${BITBUCKET_BRANCH}"
     export WEAVE_REPO_SHA="${BITBUCKET_COMMIT}"
+
+# CircleCI
+elif [[ ${CIRCLECI} ]]
+then        
+    export WEAVE_REPO_PROVIDER="github"
+    export WEAVE_REPO_URL="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+    export WEAVE_REPO_BRANCH="${CIRCLE_BRANCH}"
+    export WEAVE_REPO_SHA="${CIRCLE_SHA1}"
+
 fi
 
 export WEAVE_REPO_BRANCH=${WEAVE_REPO_BRANCH/#$REF_PREFIX}
 
-exec "$@"
+exec weave-iac-validator "$@"
