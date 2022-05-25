@@ -8,6 +8,12 @@ Validates infrastucture as code against weave policies
 - [x] Helm
 - [x] Kustomize
 
+## Supported CI/CD
+- [x] [Github](#github)
+- [x] [Gitlab](#gitlab)
+- [x] [Bitbucket](#bitbucket)
+- [x] [Circle CI](#circle-ci)
+
 ## Usage
 ```bash
 USAGE:
@@ -37,4 +43,100 @@ GLOBAL OPTIONS:
    --no-exit-error                    exit with no error (default: false)
    --help, -h                         show help (default: false)
    --version, -v                      print the version (default: false)
+```
+
+## Examples
+
+### Github
+See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
+
+### Gitlab
+
+```yaml
+weave:
+  image:
+    name: magalixcorp/weave-validator:v1
+  script:
+  - weave-validator --path <path to resources> --policies-path <path to policies>
+```
+
+#### Enable Auto Remediation
+
+```yaml
+  script:
+  - weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $GITLAB_TOKEN --remediate
+```
+
+#### Enable Static Application Security Testing
+
+```yaml
+stages:
+  - weave
+  - sast
+
+weave:
+  stage: weave
+  image:
+    name: magalixcorp/weave-validator:v1
+  script:
+  - weave-validator <path to resources> --policies-path <path to policies> --sast sast.json
+  artifacts:
+    when: on_failure
+    paths:
+    - sast.json
+
+upload_sast:
+  stage: sast
+  when: always
+  script:
+  - echo "creating sast report" 
+  artifacts:
+    reports:
+      sast: sast.json
+```
+
+
+### Bitbucket
+
+```yaml
+pipelines:
+  default:
+    - step:
+        name: 'Weaveworks'
+        image: magalixcorp/weave-validator:v1
+        script:
+          - weave-validator --path <path to resources> --policies-path <path to policies>
+```
+#### Enable Auto Remediation
+
+```yaml
+  script:
+    - weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN --remediate
+```
+
+#### Create Pipeline Report
+
+```yaml
+  script:
+    - weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN -generate-git-report
+```
+
+### Circle CI
+
+```yaml
+jobs:
+  weave:
+    docker:
+    - image: magalixcorp/weave-validator:v1
+    steps:
+    - checkout
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies>
+```
+
+#### Enable Auto Remediation
+
+```yaml
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token ${GITHUB_TOKEN} --remediate
 ```
