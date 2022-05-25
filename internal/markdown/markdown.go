@@ -38,7 +38,7 @@ func (md *Markdown) Head2(text string, args ...interface{}) {
 
 // Head3 adds h3
 func (md *Markdown) Head3(text string, args ...interface{}) {
-	md.writeln(fmt.Sprintf("## %s", fmt.Sprintf(text, args...)))
+	md.writeln(fmt.Sprintf("### %s", fmt.Sprintf(text, args...)))
 }
 
 // Paragraph adds paragraph
