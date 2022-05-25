@@ -35,20 +35,23 @@ jobs:
             docker build . -t magalixcorp/weave-validator:${TAG}
             docker push magalixcorp/weave-validator:${TAG}
 
+
 workflows:
   version: 2
   main:
     jobs:
-      - test:
-          context: org-global
-      - release:
-          context: org-global
-          requires:
-            - test
-          filters:
-            branches:
-              only:
-                - main
-                - dev
-            tags:
-              only: /^v.*
+    - test:
+        context: org-global
+        filters:
+          tags:
+            only: /^v.*/
+    - release:
+        requires:
+          - test
+        context: org-global
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            only:
+            - main
