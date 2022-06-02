@@ -4,15 +4,14 @@
 
 Validates infrastucture as code against weave policies
 
-## Supported Kustomizations
-- [x] Helm
-- [x] Kustomize
 
-## Supported CI/CD
-- [x] [Github](#github)
-- [x] [Gitlab](#gitlab)
-- [x] [Bitbucket](#bitbucket)
-- [x] [Circle CI](#circle-ci)
+- [Usage](#usage)
+- [Setup policies](#setup-policies)
+- [Auto-Remediation](#auto-remediation)
+- [UseCase: GitHub](#usecase-github)
+- [UseCase: Gitlab ](#usecase-gitlab)
+- [UseCase: Bitbucket](#usecase-bitbucket)
+- [UseCase: CircleCI](#usecase-circleci)
 
 ## Usage
 ```bash
@@ -45,12 +44,43 @@ GLOBAL OPTIONS:
    --version, -v                      print the version (default: false)
 ```
 
-## Examples
+## Setup policies
+Policies can be helm chart, kustomize directory or just plain kubernetes yaml files.
 
-### Github
+Example of policies kustomize directory
+```bash
+└── policies
+    ├── kustomization.yaml
+    ├── minimum-replica-count.yaml
+    ├── privileged-mode.yaml
+    └── privilege-escalation.yaml
+```
+
+```yaml
+# kustomization.yaml
+kind: Kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+resources:
+- minimum-replica-count.yaml
+- privilege-escalation.yaml
+- privileged-mode.yaml
+```
+
+## Auto-Remediation
+
+Supported in:
+- [] Helm
+- [x] Kustomize
+- [x] Plain kubernetes files
+
+To enable it you need to provide ```--remediate``` flag and ```--git-repo-token```.
+
+>  The token must have the permission to create pull request
+
+## UseCase: Github 
 See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
 
-### Gitlab
+## UseCase: Gitlab 
 
 ```yaml
 weave:
@@ -96,7 +126,7 @@ upload_sast:
 ```
 
 
-### Bitbucket
+## UseCase: Bitbucket 
 
 ```yaml
 pipelines:
@@ -121,7 +151,8 @@ pipelines:
     - weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN -generate-git-report
 ```
 
-### Circle CI
+
+## UseCase: CircleCI 
 
 ```yaml
 jobs:
