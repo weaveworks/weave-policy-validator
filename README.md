@@ -55,7 +55,7 @@ See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
 ```yaml
 weave:
   image:
-    name: magalixcorp/weave-validator:v1
+    name: weaveworks/weave-iac-validator:v1
   script:
   - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -77,7 +77,7 @@ stages:
 weave:
   stage: weave
   image:
-    name: magalixcorp/weave-validator:v1
+    name: weaveworks/weave-iac-validator:v1
   script:
   - weave-validator <path to resources> --policies-path <path to policies> --sast sast.json
   artifacts:
@@ -103,7 +103,7 @@ pipelines:
   default:
     - step:
         name: 'Weaveworks'
-        image: magalixcorp/weave-validator:v1
+        image: weaveworks/weave-iac-validator:v1
         script:
           - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -127,7 +127,7 @@ pipelines:
 jobs:
   weave:
     docker:
-    - image: magalixcorp/weave-validator:v1
+    - image: weaveworks/weave-iac-validator:v1
     steps:
     - checkout
     - run:
