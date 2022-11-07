@@ -46,6 +46,10 @@ type Config struct {
 	GitRepositoryBranch   string
 	GitRepositorySHA      string
 
+	// azure config
+	AzureProject         string
+	AzureOrganizationUrl string
+
 	GenerateGitProviderReport bool
 }
 
@@ -64,6 +68,12 @@ func (c *Config) ValidateGitRepositoryConf() error {
 	}
 	if c.GitRepositoryToken == "" {
 		return errors.New("missing git-repo-token value")
+	}
+	if c.GitRepositoryProvider == "azure-devops" && c.AzureProject == "" {
+		return errors.New("missing azure project value")
+	}
+	if c.GitRepositoryProvider == "azure-devops" && c.AzureOrganizationUrl == "" {
+		return errors.New("missing azure orgnization url value")
 	}
 	return nil
 }
@@ -128,6 +138,18 @@ func main() {
 			Usage:       "git repository token",
 			Destination: &conf.GitRepositoryToken,
 			EnvVars:     []string{"WEAVE_REPO_TOKEN"},
+		},
+		&cli.StringFlag{
+			Name:        "azure-project",
+			Usage:       "azure project name",
+			Destination: &conf.AzureProject,
+			EnvVars:     []string{"AZURE_PROJECT"},
+		},
+		&cli.StringFlag{
+			Name:        "azure-orgnization-url",
+			Usage:       "azure devops orgnization url",
+			Destination: &conf.AzureOrganizationUrl,
+			EnvVars:     []string{"AZURE_ORGNIZATION_URL"},
 		},
 		&cli.PathFlag{
 			Name:        "sast",
@@ -205,6 +227,8 @@ func App(ctx context.Context, conf Config) error {
 			conf.GitRepositoryProvider,
 			conf.GitRepositoryURL,
 			conf.GitRepositoryToken,
+			conf.AzureProject,
+			conf.AzureOrganizationUrl,
 		)
 		if err != nil {
 			return err

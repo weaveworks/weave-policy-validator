@@ -24,6 +24,20 @@ func parseRepoSlug(u string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
+func parseAzureRepoSlug(u string) (string, string, error) {
+	parsed, err := url.Parse(u)
+	if err != nil {
+		return "", "", fmt.Errorf("invalid url: %s", u)
+	}
+
+	parts := strings.Split(strings.Trim(parsed.Path, "/"), "/")
+	if len(parts) < 2 {
+		return "", "", fmt.Errorf("invalid url: %s", u)
+	}
+
+	return parts[0], parts[2], nil
+}
+
 func getRefName(name string) string {
 	if strings.HasPrefix(name, refPrefix) {
 		return name

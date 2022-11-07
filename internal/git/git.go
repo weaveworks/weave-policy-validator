@@ -12,6 +12,7 @@ const (
 	Github       string = "github"
 	Gitlab       string = "gitlab"
 	Bitbucket    string = "bitbucket"
+	AzureDevops  string = "azure-devops"
 	branchPrefix string = "weave-fix-"
 )
 
@@ -29,7 +30,7 @@ type GitRepository struct {
 }
 
 // NewGitRepository get new repository struct
-func NewGitRepository(provider, url, token string) (*GitRepository, error) {
+func NewGitRepository(provider, url, token, project, organizationUrl string) (*GitRepository, error) {
 	owner, repo, err := parseRepoSlug(url)
 	if err != nil {
 		return nil, err
@@ -43,6 +44,12 @@ func NewGitRepository(provider, url, token string) (*GitRepository, error) {
 		p, err = newGitlabProvider(owner, repo, token)
 	case Bitbucket:
 		p, err = newBitbucketProvider(owner, repo, token)
+	case AzureDevops:
+		_, repo, err = parseAzureRepoSlug(url)
+		if err != nil {
+			return nil, err
+		}
+		p, err = newAzureGitopsProvider(project, repo, token, organizationUrl)
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}
