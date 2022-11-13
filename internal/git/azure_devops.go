@@ -89,7 +89,7 @@ func (az *AzureDevopsProvider) CreateBranch(ctx context.Context, branch string, 
 
 // CreateCommit creates new commit
 func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message string, files []*types.File) error {
-	changes := make([]*git.GitChange, 0)
+	changes := make([]interface{}, 0)
 
 	for _, file := range files {
 		content, err := file.Content()
@@ -109,11 +109,6 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 		})
 	}
 
-	changesInterface := make([]interface{}, len(changes))
-	for i, v := range changes {
-		changesInterface[i] = v
-	}
-
 	branchName := az.GetBranchRef(branch)
 
 	branchObject, err := az.GetBranch(ctx, branch)
@@ -128,7 +123,7 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 					Author: &git.GitUserDate{
 						Name: &author,
 					},
-					Changes: &changesInterface,
+					Changes: &changes,
 					Comment: &message,
 				},
 			},
