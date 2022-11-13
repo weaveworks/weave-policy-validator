@@ -13,11 +13,12 @@ Validates infrastucture as code against weave policies
 - [x] [Gitlab](#gitlab)
 - [x] [Bitbucket](#bitbucket)
 - [x] [Circle CI](#circle-ci)
+- [x] [Azure Devops](#azure-devops)
 
 ## Usage
 ```bash
 USAGE:
-   main [global options] command [command options] [arguments...]
+   app [global options] command [command options] [arguments...]
 
 VERSION:
    0.0.1
@@ -35,6 +36,7 @@ GLOBAL OPTIONS:
    --git-repo-branch value            git repository branch [$WEAVE_REPO_BRANCH]
    --git-repo-sha value               git repository commit sha [$WEAVE_REPO_SHA]
    --git-repo-token value             git repository token [$WEAVE_REPO_TOKEN]
+   --azure-project value              azure project name [$AZURE_PROJECT]
    --sast value                       save result as gitlab sast format
    --sarif value                      save result as sarif format
    --json value                       save result as json format
@@ -55,7 +57,7 @@ See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
 ```yaml
 weave:
   image:
-    name: weaveworks/weave-iac-validator:v1
+    name: weaveworks/weave-iac-validator:v1.1
   script:
   - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -77,7 +79,7 @@ stages:
 weave:
   stage: weave
   image:
-    name: weaveworks/weave-iac-validator:v1
+    name: weaveworks/weave-iac-validator:v1.1
   script:
   - weave-validator <path to resources> --policies-path <path to policies> --sast sast.json
   artifacts:
@@ -103,7 +105,7 @@ pipelines:
   default:
     - step:
         name: 'Weaveworks'
-        image: weaveworks/weave-iac-validator:v1
+        image: weaveworks/weave-iac-validator:v1.1
         script:
           - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -127,7 +129,7 @@ pipelines:
 jobs:
   weave:
     docker:
-    - image: weaveworks/weave-iac-validator:v1
+    - image: weaveworks/weave-iac-validator:v1.1
     steps:
     - checkout
     - run:
@@ -139,4 +141,25 @@ jobs:
 ```yaml
     - run:
         command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token ${GITHUB_TOKEN} --remediate
+```
+
+
+### Azure DevOps
+
+```yaml
+jobs:
+  weave:
+    docker:
+    - image: weaveworks/weave-iac-validator:v1.1
+    steps:
+    - checkout
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies>
+```
+
+#### Enable Auto Remediation
+
+```yaml
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN --remediate
 ```

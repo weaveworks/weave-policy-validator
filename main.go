@@ -46,6 +46,9 @@ type Config struct {
 	GitRepositoryBranch   string
 	GitRepositorySHA      string
 
+	// azure config
+	AzureProject string
+
 	GenerateGitProviderReport bool
 }
 
@@ -64,6 +67,9 @@ func (c *Config) ValidateGitRepositoryConf() error {
 	}
 	if c.GitRepositoryToken == "" {
 		return errors.New("missing git-repo-token value")
+	}
+	if c.GitRepositoryProvider == "azure-devops" && c.AzureProject == "" {
+		return errors.New("missing azure project value")
 	}
 	return nil
 }
@@ -128,6 +134,12 @@ func main() {
 			Usage:       "git repository token",
 			Destination: &conf.GitRepositoryToken,
 			EnvVars:     []string{"WEAVE_REPO_TOKEN"},
+		},
+		&cli.StringFlag{
+			Name:        "azure-project",
+			Usage:       "azure project name",
+			Destination: &conf.AzureProject,
+			EnvVars:     []string{"AZURE_PROJECT"},
 		},
 		&cli.PathFlag{
 			Name:        "sast",
@@ -205,6 +217,7 @@ func App(ctx context.Context, conf Config) error {
 			conf.GitRepositoryProvider,
 			conf.GitRepositoryURL,
 			conf.GitRepositoryToken,
+			conf.AzureProject,
 		)
 		if err != nil {
 			return err

@@ -38,6 +38,17 @@ then
 
 fi
 
+# AzureDevops
+elif [[ ${BUILD_REPOSITORY_URI} ]]
+then
+    export WEAVE_REPO_PROVIDER="azure-devops"
+    export WEAVE_REPO_URL="${BUILD_REPOSITORY_URI}"
+    export WEAVE_REPO_BRANCH="${BUILD_SOURCEBRANCHNAME}"
+    export WEAVE_REPO_SHA="${BUILD_SOURCEVERSION}"
+    export WEAVE_REPO_TOKEN="${SYSTEM_ACCESSTOKEN}"
+    export AZURE_PROJECT="${SYSTEM_TEAMPROJECT}"
+fi
+
 export WEAVE_REPO_BRANCH=${WEAVE_REPO_BRANCH/#$REF_PREFIX}
 
 exec weave-iac-validator "$@"
