@@ -48,7 +48,6 @@ func (az *AzureDevopsProvider) GetBranchRef(branch string) string {
 
 // GetBranch Gets the branch with name
 func (az *AzureDevopsProvider) GetBranch(ctx context.Context, branch string) (*git.GitBranchStats, error) {
-	// make sure branch is not existed
 	return az.client.GetBranch(ctx, git.GetBranchArgs{
 		RepositoryId: &az.repo,
 		Name:         &branch,
