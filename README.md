@@ -136,6 +136,19 @@ jobs:
         command: weave-validator --path <path to resources> --policies-path <path to policies>
 ```
 
+### Azure DevOps
+
+```yaml
+jobs:
+  weave:
+    docker:
+    - image: weaveworks/weave-iac-validator:v1
+    steps:
+    - checkout
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies>
+```
+
 #### Enable Auto Remediation
 
 ```yaml
