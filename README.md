@@ -136,6 +136,14 @@ jobs:
         command: weave-validator --path <path to resources> --policies-path <path to policies>
 ```
 
+#### Enable Auto Remediation
+
+```yaml
+    - run:
+        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token ${GITHUB_TOKEN} --remediate
+```
+
+
 ### Azure DevOps
 
 ```yaml
@@ -153,5 +161,5 @@ jobs:
 
 ```yaml
     - run:
-        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token ${GITHUB_TOKEN} --remediate
+        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN --remediate
 ```
