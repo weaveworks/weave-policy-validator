@@ -29,13 +29,11 @@ func parseAzureRepoSlug(u string) (string, string, error) {
 	if err != nil {
 		return "", "", fmt.Errorf("invalid url: %s", u)
 	}
-
-	parts := strings.Split(strings.Trim(parsed.Path, "/"), "/")
+	parts := strings.Split(parsed.String(), "/_git/")
 	if len(parts) < 2 {
 		return "", "", fmt.Errorf("invalid url: %s", u)
 	}
-
-	return parts[0], parts[2], nil
+	return parts[0], parts[1], nil
 }
 
 func getRefName(name string) string {

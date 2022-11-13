@@ -47,8 +47,7 @@ type Config struct {
 	GitRepositorySHA      string
 
 	// azure config
-	AzureProject         string
-	AzureOrganizationUrl string
+	AzureProject string
 
 	GenerateGitProviderReport bool
 }
@@ -71,9 +70,6 @@ func (c *Config) ValidateGitRepositoryConf() error {
 	}
 	if c.GitRepositoryProvider == "azure-devops" && c.AzureProject == "" {
 		return errors.New("missing azure project value")
-	}
-	if c.GitRepositoryProvider == "azure-devops" && c.AzureOrganizationUrl == "" {
-		return errors.New("missing azure orgnization url value")
 	}
 	return nil
 }
@@ -144,12 +140,6 @@ func main() {
 			Usage:       "azure project name",
 			Destination: &conf.AzureProject,
 			EnvVars:     []string{"AZURE_PROJECT"},
-		},
-		&cli.StringFlag{
-			Name:        "azure-orgnization-url",
-			Usage:       "azure devops orgnization url",
-			Destination: &conf.AzureOrganizationUrl,
-			EnvVars:     []string{"AZURE_ORGNIZATION_URL"},
 		},
 		&cli.PathFlag{
 			Name:        "sast",
@@ -228,7 +218,6 @@ func App(ctx context.Context, conf Config) error {
 			conf.GitRepositoryURL,
 			conf.GitRepositoryToken,
 			conf.AzureProject,
-			conf.AzureOrganizationUrl,
 		)
 		if err != nil {
 			return err

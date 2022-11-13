@@ -21,10 +21,9 @@ type AzureDevopsProvider struct {
 	project         string
 	repo            string
 	organizationUrl string
-	oldCommit       string
 }
 
-func newAzureGitopsProvider(project, repo, token, organizationUrl string) (*AzureDevopsProvider, error) {
+func newAzureGitopsProvider(organizationUrl, project, repo, token string) (*AzureDevopsProvider, error) {
 
 	// Create a connection to your organization
 	connection := azuredevops.NewPatConnection(organizationUrl, token)
@@ -39,14 +38,18 @@ func newAzureGitopsProvider(project, repo, token, organizationUrl string) (*Azur
 		organizationUrl: organizationUrl,
 		project:         project,
 		repo:            repo,
-		oldCommit:       "",
 	}, nil
 }
 
-// CreateBranch creates new branch from given commit SHA
-func (az *AzureDevopsProvider) CreateBranch(ctx context.Context, branch string, sha string) error {
+// GetBranchRef forms the full branch name
+func (az *AzureDevopsProvider) GetBranchRef(branch string) string {
+	return fmt.Sprintf("refs/heads/%s", branch)
+}
+
+// GetBranch Gets the branch with name
+func (az *AzureDevopsProvider) GetBranch(ctx context.Context, branch string) (*git.GitBranchStats, error) {
 	// make sure branch is not existed
-	_, err := az.client.GetBranch(ctx, git.GetBranchArgs{
+	return az.client.GetBranch(ctx, git.GetBranchArgs{
 		RepositoryId: &az.repo,
 		Name:         &branch,
 		Project:      &az.project,
@@ -54,16 +57,22 @@ func (az *AzureDevopsProvider) CreateBranch(ctx context.Context, branch string, 
 			Version: &branch,
 		},
 	})
+}
+
+// CreateBranch creates new branch from given commit SHA
+func (az *AzureDevopsProvider) CreateBranch(ctx context.Context, branch string, sha string) error {
+	// make sure branch is not existed
+	_, err := az.GetBranch(ctx, branch)
 	if err == nil {
 		return nil
 	}
 	locked := true
-	branchRef := fmt.Sprintf("refs/heads/%s", branch)
+	branchName := az.GetBranchRef(branch)
 	args := git.UpdateRefsArgs{
 		RefUpdates: &[]git.GitRefUpdate{
 			{
 				IsLocked:    &locked,
-				Name:        &branchRef,
+				Name:        &branchName,
 				OldObjectId: &oldObjectId,
 				NewObjectId: &sha,
 			},
@@ -76,7 +85,6 @@ func (az *AzureDevopsProvider) CreateBranch(ctx context.Context, branch string, 
 	if err != nil {
 		return fmt.Errorf("failed to create branch, name %s, commit %s due to %w", branch, sha, err)
 	}
-	az.oldCommit = sha
 	return nil
 }
 
@@ -107,7 +115,13 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 		changesInterface[i] = v
 	}
 
-	branchRef := fmt.Sprintf("refs/heads/%s", branch)
+	branchName := az.GetBranchRef(branch)
+
+	branchObject, err := az.GetBranch(ctx, branch)
+	if err != nil {
+		return fmt.Errorf(fmt.Sprintf("couldn't get branch %s", branch), err)
+	}
+
 	args := git.CreatePushArgs{
 		Push: &git.GitPush{
 			Commits: &[]git.GitCommitRef{
@@ -121,8 +135,8 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 			},
 			RefUpdates: &[]git.GitRefUpdate{
 				{
-					Name:        &branchRef,
-					OldObjectId: &az.oldCommit,
+					Name:        &branchName,
+					OldObjectId: branchObject.Commit.CommitId,
 				},
 			},
 		},
@@ -130,7 +144,7 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 		Project:      &az.project,
 	}
 
-	_, err := az.client.CreatePush(ctx, args)
+	_, err = az.client.CreatePush(ctx, args)
 	if err != nil {
 		return fmt.Errorf("failed to create commit, error: %v", err)
 	}
@@ -140,8 +154,8 @@ func (az *AzureDevopsProvider) CreateCommit(ctx context.Context, branch, message
 
 // CreatePullRequest creates new pull request
 func (az *AzureDevopsProvider) CreatePullRequest(ctx context.Context, source, target, title, description string) (*string, error) {
-	source = fmt.Sprintf("refs/heads/%s", source)
-	target = fmt.Sprintf("refs/heads/%s", target)
+	source = az.GetBranchRef(source)
+	target = az.GetBranchRef(target)
 	listArgs := git.GetPullRequestsArgs{
 		RepositoryId: &az.repo,
 		Project:      &az.project,
