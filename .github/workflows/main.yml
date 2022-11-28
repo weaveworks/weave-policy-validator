@@ -41,5 +41,10 @@ jobs:
       run: |
         docker build . -t weaveworks/weave-iac-validator:${{ github.ref_name }}
         docker push weaveworks/weave-iac-validator:${{ github.ref_name }}
+
+    - name: Build and Push Azure Image
+      working-directory: ./azure
+      if: github.ref_type == 'tag'
+      run: |
         docker build . -t weaveworks/weave-iac-validator:${{ github.ref_name }}-azure
         docker push weaveworks/weave-iac-validator:${{ github.ref_name }}-azure
