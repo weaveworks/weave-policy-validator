@@ -10,6 +10,7 @@ build:  $(OUTPUT)
 	CGO_ENABLED=0 GOOS=linux go build -o bin/app \
 		-ldflags "-X main.version=$(VERSION)" \
 		-gcflags "-trimpath $(GOPATH)/src"
+	mkdir -p azure/bin && cp bin/app azure/bin/app
 
 $(OUTPUT):
 	mkdir -p $(OUTPUT)

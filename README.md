@@ -147,19 +147,22 @@ jobs:
 ### Azure DevOps
 
 ```yaml
-jobs:
-  weave:
-    docker:
-    - image: weaveworks/weave-iac-validator:v1.1
-    steps:
-    - checkout
-    - run:
-        command: weave-validator --path <path to resources> --policies-path <path to policies>
+trigger:
+- <list of branches to trigger the pipeline on>
+
+pool:
+  vmImage: ubuntu-latest
+
+container:
+  image: weaveworks/weave-iac-validator:v1.1-azure
+
+steps:
+- script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN)
 ```
 
 #### Enable Auto Remediation
 
 ```yaml
-    - run:
-        command: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $TOKEN --remediate
+steps:
+- script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN) --remediate
 ```
