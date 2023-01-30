@@ -35,6 +35,7 @@ type Config struct {
 	SASTOutputFile  string
 	SARIFOutputFile string
 	JSONOutputFile  string
+	MDOutputFile    string
 
 	// remediation config
 	Remediate bool
@@ -155,6 +156,11 @@ func main() {
 			Name:        "json",
 			Usage:       "save result as json format",
 			Destination: &conf.JSONOutputFile,
+		},
+		&cli.PathFlag{
+			Name:        "markdown",
+			Usage:       "save result as markdown format",
+			Destination: &conf.MDOutputFile,
 		},
 		&cli.BoolFlag{
 			Name:        "generate-git-report",
@@ -289,6 +295,14 @@ func App(ctx context.Context, conf Config) error {
 			return fmt.Errorf("failed to export result as json, error: %v", err)
 		}
 		err = saveOutputFile(conf.JSONOutputFile, js)
+		if err != nil {
+			return err
+		}
+	}
+
+	if conf.MDOutputFile != "" {
+		md := result.MarkdowSummary()
+		err = saveOutputFile(conf.MDOutputFile, md)
 		if err != nil {
 			return err
 		}

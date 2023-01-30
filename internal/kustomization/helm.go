@@ -2,6 +2,7 @@ package kustomization
 
 import (
 	"context"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -29,8 +30,33 @@ func (h *Helm) SetValueFile(filename string) {
 	h.valueFile = &filename
 }
 
-func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
-	chart, err := loader.Load(h.Path)
+func (h *Helm) ResourceFiles(ctx context.Context) ([]*types.File, error) {
+	paths, err := glob(h.Path)
+	if err != nil {
+		return nil, err
+	}
+
+	var files []*types.File
+	for _, path := range paths {
+		info, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+
+		if !info.IsDir() {
+			continue
+		}
+
+		if chartFiles, err := h.resourceFiles(ctx, path); err == nil {
+			files = append(files, chartFiles...)
+		}
+	}
+
+	return files, nil
+}
+
+func (h *Helm) resourceFiles(_ context.Context, chartPath string) ([]*types.File, error) {
+	chart, err := loader.Load(chartPath)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +86,7 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 
 	var files []*types.File
 	for path, template := range templates {
-		path = normalizePath(h.Path, path, chart.Name())
+		path = normalizePath(chartPath, path, chart.Name())
 
 		nodes, err := yaml.StringParse(template)
 		if err != nil {
@@ -76,16 +102,27 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 		}
 		files = append(files, file)
 	}
-
 	return files, nil
 }
 
 func (h *Helm) IsValidPath() bool {
-	_, err := loader.Load(h.Path)
+	info, err := os.Stat(h.Path)
 	if err != nil {
 		return false
 	}
-	return true
+	if !info.IsDir() {
+		return false
+	}
+	paths, err := glob(h.Path)
+	if err != nil {
+		return false
+	}
+	for _, path := range paths {
+		if _, err := loader.Load(path); err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func normalizePath(basePath, path, chartName string) string {
