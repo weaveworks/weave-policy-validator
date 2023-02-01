@@ -3,6 +3,7 @@ package git
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/google/go-github/v41/github"
@@ -27,10 +28,23 @@ type GithubProvider struct {
 	repo   string
 }
 
-func newGithubProvider(owner, repo, token string) (*GithubProvider, error) {
+func newGithubProvider(owner, provider, repo, token string) (*GithubProvider, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(context.Background(), ts)
-	client := github.NewClient(tc)
+	var client *github.Client
+
+	if provider == GithubEnterprise {
+		gheRepo, err := url.Parse(repo)
+
+		if err != nil {
+			return nil, err
+		}
+
+		client = github.NewEnterpriseClient(gheRepo.Hostname(), tc)
+		repo = gheRepo.Path
+	} else {
+		client = github.NewClient(tc)
+	}
 
 	return &GithubProvider{
 		client: client,
