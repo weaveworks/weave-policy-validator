@@ -38,10 +38,11 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 	vals := chart.Values
 	if h.valueFile != nil {
 		var valuesFilePath string
-		if filepath.IsAbs(*h.valueFile) {
-			valuesFilePath = *h.valueFile
-		} else {
+		// if the path is just a the file name, append it to chart path
+		if filepath.Base(*h.valueFile) == *h.valueFile {
 			valuesFilePath = filepath.Join(h.Path, *h.valueFile)
+		} else {
+			valuesFilePath = *h.valueFile
 		}
 		values, err := chartutil.ReadValuesFile(valuesFilePath)
 		if err != nil {
