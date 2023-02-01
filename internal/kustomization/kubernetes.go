@@ -2,8 +2,10 @@ package kustomization
 
 import (
 	"context"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 )
@@ -25,21 +27,17 @@ func (k *Kubernetes) ResourceFiles(_ context.Context) ([]*types.File, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var files []*types.File
 	for _, path := range paths {
 		file, err := types.NewFileFromPath(path)
 		if err != nil {
 			return nil, err
 		}
-
 		for _, resource := range file.Resources {
 			resource.Rendered = resource.Raw
 		}
-
 		files = append(files, file)
 	}
-
 	return files, nil
 }
 
@@ -48,9 +46,17 @@ func (k *Kubernetes) IsValidPath() bool {
 	if err != nil {
 		return false
 	}
-
 	if info.IsDir() {
-		return true
+		fileInfo, err := ioutil.ReadDir(k.Path)
+		if err != nil {
+			return false
+		}
+		for _, file := range fileInfo {
+			if isYamlFile(file.Name()) {
+				return true
+			}
+		}
+		return false
 	}
 
 	return isYamlFile(k.Path)
@@ -59,6 +65,9 @@ func (k *Kubernetes) IsValidPath() bool {
 func glob(path string) ([]string, error) {
 	var paths []string
 	err := filepath.Walk(path, func(path string, _ os.FileInfo, err error) error {
+		if strings.HasPrefix(filepath.Base(path), ".") {
+			return nil
+		}
 		if isYamlFile(path) {
 			paths = append(paths, path)
 		}

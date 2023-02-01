@@ -7,11 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/MagalixTechnologies/policy-core/validation"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/git"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
+	"github.com/MagalixTechnologies/weave-iac-validator/internal/trie"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/validator"
 	"github.com/urfave/cli/v2"
@@ -197,9 +199,9 @@ func main() {
 }
 
 func App(ctx context.Context, conf Config) error {
-	entityKustomizer, err := getKustomizer(conf.EntityKustomizeConf)
+	files, err := scan(ctx, conf.EntityKustomizeConf)
 	if err != nil {
-		return fmt.Errorf("failed to init entities kustomizer, error: %v", err)
+		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
 	policyKustomizer, err := getKustomizer(conf.PoliciesKustomizeConf)
@@ -222,11 +224,6 @@ func App(ctx context.Context, conf Config) error {
 		if err != nil {
 			return err
 		}
-	}
-
-	files, err := entityKustomizer.ResourceFiles(ctx)
-	if err != nil {
-		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
 	result, err := validator.Validate(ctx, files)
@@ -315,6 +312,41 @@ func getKustomizer(conf KustomizationConf) (kustomization.Kustomizer, error) {
 	}
 
 	return kustomizer, nil
+}
+
+func scan(ctx context.Context, conf KustomizationConf) ([]*types.File, error) {
+	var paths []string
+	err := filepath.Walk(conf.Path, func(path string, _ os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		paths = append(paths, path)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	t := trie.NewTrie()
+
+	var files []*types.File
+	for _, path := range paths {
+		if t.Search(filepath.Dir(path)) {
+			t.Insert(path)
+			continue
+		}
+
+		conf.Path = path
+		if kustomizer, err := getKustomizer(conf); err == nil {
+			t.Insert(path)
+			kfiles, err := kustomizer.ResourceFiles(ctx)
+			if err != nil {
+				return nil, fmt.Errorf("failed to get resources, path: %s, error: %v", path, err)
+			}
+			files = append(files, kfiles...)
+		}
+	}
+	return files, nil
 }
 
 func saveOutputFile(path string, content string) error {
