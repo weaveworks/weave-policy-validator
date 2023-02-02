@@ -10,6 +10,7 @@ Validates infrastucture as code against weave policies
 
 ## Supported CI/CD
 - [x] [Github](#github)
+- [x] [Github Enterprise](#github)
 - [x] [Gitlab](#gitlab)
 - [x] [Bitbucket](#bitbucket)
 - [x] [Circle CI](#circle-ci)
