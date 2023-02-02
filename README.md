@@ -27,11 +27,12 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --path value                       path to resources kustomization directory
+   --path value                       path to scan resources from
    --helm-values-file value           path to resources helm values file
    --policies-path value              path to policies kustomization directory
    --policies-helm-values-file value  path to policies helm values file
    --git-repo-provider value          git repository provider [$WEAVE_REPO_PROVIDER]
+   --git-repo-host value              git repository host [$WEAVE_REPO_HOST]
    --git-repo-url value               git repository url [$WEAVE_REPO_URL]
    --git-repo-branch value            git repository branch [$WEAVE_REPO_BRANCH]
    --git-repo-sha value               git repository commit sha [$WEAVE_REPO_SHA]

@@ -91,7 +91,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:        "path",
-			Usage:       "path to resources kustomization directory",
+			Usage:       "path to scan resources from",
 			Destination: &conf.EntityKustomizeConf.Path,
 			Required:    true,
 		},
