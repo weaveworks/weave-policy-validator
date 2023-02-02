@@ -40,7 +40,12 @@ func newGithubProvider(owner, provider, repo, token string) (*GithubProvider, er
 			return nil, err
 		}
 
-		client = github.NewEnterpriseClient(gheRepo.Hostname(), tc)
+		client, err = github.NewEnterpriseClient(gheRepo.Hostname(), gheRepo.Hostname(), tc)
+
+		if err != nil {
+			return nil, err
+		}
+
 		repo = gheRepo.Path
 	} else {
 		client = github.NewClient(tc)
