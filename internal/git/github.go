@@ -27,10 +27,22 @@ type GithubProvider struct {
 	repo   string
 }
 
-func newGithubProvider(owner, repo, token string) (*GithubProvider, error) {
+func newGithubProvider(owner, provider, host, repo, token string) (*GithubProvider, error) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
 	tc := oauth2.NewClient(context.Background(), ts)
-	client := github.NewClient(tc)
+	var client *github.Client
+
+	if provider == GithubEnterprise {
+		gheURL := fmt.Sprintf("https://%s", host)
+		var err error
+		client, err = github.NewEnterpriseClient(gheURL, gheURL, tc)
+
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		client = github.NewClient(tc)
+	}
 
 	return &GithubProvider{
 		client: client,

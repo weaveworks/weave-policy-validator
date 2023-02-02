@@ -43,6 +43,7 @@ type Config struct {
 
 	// git repo config
 	GitRepositoryProvider string
+	GitRepositoryHost     string
 	GitRepositoryURL      string
 	GitRepositoryToken    string
 	GitRepositoryBranch   string
@@ -57,6 +58,9 @@ type Config struct {
 func (c *Config) ValidateGitRepositoryConf() error {
 	if c.GitRepositoryProvider == "" {
 		return errors.New("missing git-repo-provider value")
+	}
+	if c.GitRepositoryHost == "" && c.GitRepositoryProvider == git.GithubEnterprise {
+		return errors.New("missing git-repo-host value")
 	}
 	if c.GitRepositoryURL == "" {
 		return errors.New("missing git-repo-url value")
@@ -112,6 +116,12 @@ func main() {
 			Usage:       "git repository provider",
 			Destination: &conf.GitRepositoryProvider,
 			EnvVars:     []string{"WEAVE_REPO_PROVIDER"},
+		},
+		&cli.StringFlag{
+			Name:        "git-repo-host",
+			Usage:       "git repository host",
+			Destination: &conf.GitRepositoryHost,
+			EnvVars:     []string{"WEAVE_REPO_HOST"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-url",
@@ -217,6 +227,7 @@ func App(ctx context.Context, conf Config) error {
 	if conf.Remediate || conf.GenerateGitProviderReport {
 		gitrepo, err = git.NewGitRepository(
 			conf.GitRepositoryProvider,
+			conf.GitRepositoryHost,
 			conf.GitRepositoryURL,
 			conf.GitRepositoryToken,
 			conf.AzureProject,
