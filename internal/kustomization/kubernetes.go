@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 )
@@ -65,7 +64,7 @@ func (k *Kubernetes) IsValidPath() bool {
 func glob(path string) ([]string, error) {
 	var paths []string
 	err := filepath.Walk(path, func(path string, _ os.FileInfo, err error) error {
-		if strings.HasPrefix(filepath.Base(path), ".") {
+		if isHiddenFile(path) {
 			return nil
 		}
 		if isYamlFile(path) {

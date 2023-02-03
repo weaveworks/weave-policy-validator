@@ -69,7 +69,7 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 	for path, template := range templates {
 		path = normalizePath(h.Path, path, chart.Name())
 
-		if !isYamlFile(path) {
+		if isHiddenFile(path) || !isYamlFile(path) {
 			continue
 		}
 
