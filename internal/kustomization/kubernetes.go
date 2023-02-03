@@ -2,6 +2,7 @@ package kustomization
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -52,7 +53,7 @@ func (k *Kubernetes) IsValidPath() bool {
 			return false
 		}
 		for _, file := range fileInfo {
-			if isValidKubeFile(file.Name()) {
+			if isValidKubeFile(filepath.Join(k.Path, file.Name())) {
 				return true
 			}
 		}
@@ -92,6 +93,7 @@ func isValidKubeFile(path string) bool {
 
 	node, err := yaml.ReadFile(path)
 	if err != nil {
+		fmt.Println(err)
 		return false
 	}
 
