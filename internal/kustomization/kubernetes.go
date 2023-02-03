@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
 type Kubernetes struct {
@@ -51,7 +52,7 @@ func (k *Kubernetes) IsValidPath() bool {
 			return false
 		}
 		for _, file := range fileInfo {
-			if isYamlFile(file.Name()) {
+			if isValidKubeFile(file.Name()) {
 				return true
 			}
 		}
@@ -78,4 +79,24 @@ func glob(path string) ([]string, error) {
 func isYamlFile(path string) bool {
 	ext := filepath.Ext(path)
 	return ext == ".yml" || ext == ".yaml"
+}
+
+func isValidKubeFile(path string) bool {
+	if !isYamlFile(path) {
+		return false
+	}
+
+	if isHiddenFile(path) {
+		return false
+	}
+
+	node, err := yaml.ReadFile(path)
+	if err != nil {
+		return false
+	}
+
+	if node.GetKind() == "" {
+		return false
+	}
+	return true
 }
