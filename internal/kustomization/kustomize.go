@@ -143,13 +143,6 @@ func (k *Kustomize) IsValidPath() bool {
 		return false
 	}
 
-	filename := filepath.Base(k.Path)
-	for _, name := range konfig.RecognizedKustomizationFileNames() {
-		if filename == name {
-			return true
-		}
-	}
-
 	return false
 }
 
