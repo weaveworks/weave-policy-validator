@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/yaml"
 )
 
@@ -22,7 +24,7 @@ func NewFile(path string) *File {
 func NewFileFromPath(path string) (*File, error) {
 	nodes, err := yaml.MultiDocFromFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to parse file, path: %s error: %v", path, err)
 	}
 
 	resources := make(map[string]*Resource)

@@ -7,11 +7,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/MagalixTechnologies/policy-core/validation"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/git"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
+	"github.com/MagalixTechnologies/weave-iac-validator/internal/trie"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/MagalixTechnologies/weave-iac-validator/internal/validator"
 	"github.com/urfave/cli/v2"
@@ -41,6 +43,7 @@ type Config struct {
 
 	// git repo config
 	GitRepositoryProvider string
+	GitRepositoryHost     string
 	GitRepositoryURL      string
 	GitRepositoryToken    string
 	GitRepositoryBranch   string
@@ -55,6 +58,9 @@ type Config struct {
 func (c *Config) ValidateGitRepositoryConf() error {
 	if c.GitRepositoryProvider == "" {
 		return errors.New("missing git-repo-provider value")
+	}
+	if c.GitRepositoryHost == "" && c.GitRepositoryProvider == git.GithubEnterprise {
+		return errors.New("missing git-repo-host value")
 	}
 	if c.GitRepositoryURL == "" {
 		return errors.New("missing git-repo-url value")
@@ -85,7 +91,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:        "path",
-			Usage:       "path to resources kustomization directory",
+			Usage:       "path to scan resources from",
 			Destination: &conf.EntityKustomizeConf.Path,
 			Required:    true,
 		},
@@ -110,6 +116,12 @@ func main() {
 			Usage:       "git repository provider",
 			Destination: &conf.GitRepositoryProvider,
 			EnvVars:     []string{"WEAVE_REPO_PROVIDER"},
+		},
+		&cli.StringFlag{
+			Name:        "git-repo-host",
+			Usage:       "git repository host",
+			Destination: &conf.GitRepositoryHost,
+			EnvVars:     []string{"WEAVE_REPO_HOST"},
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-url",
@@ -197,9 +209,9 @@ func main() {
 }
 
 func App(ctx context.Context, conf Config) error {
-	entityKustomizer, err := getKustomizer(conf.EntityKustomizeConf)
+	files, err := scan(ctx, conf.EntityKustomizeConf)
 	if err != nil {
-		return fmt.Errorf("failed to init entities kustomizer, error: %v", err)
+		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
 	policyKustomizer, err := getKustomizer(conf.PoliciesKustomizeConf)
@@ -215,6 +227,7 @@ func App(ctx context.Context, conf Config) error {
 	if conf.Remediate || conf.GenerateGitProviderReport {
 		gitrepo, err = git.NewGitRepository(
 			conf.GitRepositoryProvider,
+			conf.GitRepositoryHost,
 			conf.GitRepositoryURL,
 			conf.GitRepositoryToken,
 			conf.AzureProject,
@@ -222,11 +235,6 @@ func App(ctx context.Context, conf Config) error {
 		if err != nil {
 			return err
 		}
-	}
-
-	files, err := entityKustomizer.ResourceFiles(ctx)
-	if err != nil {
-		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
 	result, err := validator.Validate(ctx, files)
@@ -315,6 +323,41 @@ func getKustomizer(conf KustomizationConf) (kustomization.Kustomizer, error) {
 	}
 
 	return kustomizer, nil
+}
+
+func scan(ctx context.Context, conf KustomizationConf) ([]*types.File, error) {
+	var paths []string
+	err := filepath.Walk(conf.Path, func(path string, _ os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		paths = append(paths, path)
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	t := trie.NewTrie()
+
+	var files []*types.File
+	for _, path := range paths {
+		if t.Search(filepath.Dir(path)) {
+			t.Insert(path)
+			continue
+		}
+
+		conf.Path = path
+		if kustomizer, err := getKustomizer(conf); err == nil {
+			t.Insert(path)
+			kfiles, err := kustomizer.ResourceFiles(ctx)
+			if err != nil {
+				return nil, fmt.Errorf("failed to get resources, path: %s, error: %v", path, err)
+			}
+			files = append(files, kfiles...)
+		}
+	}
+	return files, nil
 }
 
 func saveOutputFile(path string, content string) error {

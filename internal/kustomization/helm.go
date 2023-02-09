@@ -37,7 +37,14 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 
 	vals := chart.Values
 	if h.valueFile != nil {
-		values, err := chartutil.ReadValuesFile(*h.valueFile)
+		var valuesFilePath string
+		// if the path is just a the file name, append it to chart path
+		if filepath.Base(*h.valueFile) == *h.valueFile {
+			valuesFilePath = filepath.Join(h.Path, *h.valueFile)
+		} else {
+			valuesFilePath = *h.valueFile
+		}
+		values, err := chartutil.ReadValuesFile(valuesFilePath)
 		if err != nil {
 			return nil, err
 		}
@@ -61,6 +68,10 @@ func (h *Helm) ResourceFiles(_ context.Context) ([]*types.File, error) {
 	var files []*types.File
 	for path, template := range templates {
 		path = normalizePath(h.Path, path, chart.Name())
+
+		if isHiddenFile(path) || !isYamlFile(path) {
+			continue
+		}
 
 		nodes, err := yaml.StringParse(template)
 		if err != nil {

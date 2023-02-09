@@ -9,11 +9,12 @@ import (
 )
 
 const (
-	Github       string = "github"
-	Gitlab       string = "gitlab"
-	Bitbucket    string = "bitbucket"
-	AzureDevops  string = "azure-devops"
-	branchPrefix string = "weave-fix-"
+	Github           string = "github"
+	GithubEnterprise string = "github-enterprise"
+	Gitlab           string = "gitlab"
+	Bitbucket        string = "bitbucket"
+	AzureDevops      string = "azure-devops"
+	branchPrefix     string = "weave-fix-"
 )
 
 type Provider interface {
@@ -30,7 +31,7 @@ type GitRepository struct {
 }
 
 // NewGitRepository get new repository struct
-func NewGitRepository(provider, url, token, project string) (*GitRepository, error) {
+func NewGitRepository(provider, host, url, token, project string) (*GitRepository, error) {
 	owner, repo, err := parseRepoSlug(url)
 	if err != nil {
 		return nil, err
@@ -38,8 +39,8 @@ func NewGitRepository(provider, url, token, project string) (*GitRepository, err
 
 	var p Provider
 	switch provider {
-	case Github:
-		p, err = newGithubProvider(owner, repo, token)
+	case Github, GithubEnterprise:
+		p, err = newGithubProvider(owner, provider, host, repo, token)
 	case Gitlab:
 		p, err = newGitlabProvider(owner, repo, token)
 	case Bitbucket:
