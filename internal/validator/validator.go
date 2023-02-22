@@ -62,9 +62,9 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 					Details: getDetails(violation.Details),
 				}
 
-				var startLine, endLine int
+				startLine, endLine := 1, 1
 				if result.Details.ViolatingKey != nil {
-					startLine, endLine := resource.FindKey(*result.Details.ViolatingKey)
+					startLine, endLine = resource.FindKey(*result.Details.ViolatingKey)
 					if endLine < startLine {
 						endLine = startLine
 					}
