@@ -62,15 +62,11 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 					Details: getDetails(violation.Details),
 				}
 
+				var startLine, endLine int
 				if result.Details.ViolatingKey != nil {
 					startLine, endLine := resource.FindKey(*result.Details.ViolatingKey)
 					if endLine < startLine {
 						endLine = startLine
-					}
-					result.Location = types.Location{
-						Path:      file.Path,
-						StartLine: startLine,
-						EndLine:   endLine,
 					}
 
 					if v.remediate && result.Details.RecommendedValue != nil {
@@ -82,6 +78,13 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 						}
 					}
 				}
+
+				result.Location = types.Location{
+					Path:      file.Path,
+					StartLine: startLine,
+					EndLine:   endLine,
+				}
+
 				results.Violations = append(results.Violations, result)
 				results.ViolationCount++
 			}
