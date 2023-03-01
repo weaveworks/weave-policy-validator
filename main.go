@@ -190,6 +190,13 @@ func main() {
 	}
 
 	app.Before = func(context *cli.Context) error {
+		var err error
+		if conf.EntityKustomizeConf.Path, err = filepath.Abs(conf.EntityKustomizeConf.Path); err != nil {
+			return fmt.Errorf("invalid entities path: %w", err)
+		}
+		if conf.PoliciesKustomizeConf.Path, err = filepath.Abs(conf.PoliciesKustomizeConf.Path); err != nil {
+			return fmt.Errorf("invalid policies path: %w", err)
+		}
 		if conf.Remediate || conf.GenerateGitProviderReport {
 			if err := conf.ValidateGitRepositoryConf(); err != nil {
 				return err
