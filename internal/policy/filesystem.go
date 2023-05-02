@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MagalixTechnologies/policy-core/domain"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
+	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
 )
 
 type FilesystemPolicySource struct {
@@ -39,4 +39,8 @@ func (l *FilesystemPolicySource) GetAll(ctx context.Context) ([]domain.Policy, e
 		}
 	}
 	return policies, nil
+}
+
+func (l *FilesystemPolicySource) GetPolicyConfig(ctx context.Context, entity domain.Entity) (*domain.PolicyConfig, error) {
+	return nil, nil
 }

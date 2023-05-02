@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MagalixTechnologies/policy-core/domain"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
 	"github.com/stretchr/testify/assert"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
+	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
 )
 
 func TestFileSystemPolicySource(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/google/go-github/v41/github"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 	"golang.org/x/oauth2"
 )
 

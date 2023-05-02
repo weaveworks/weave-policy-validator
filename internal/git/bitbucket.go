@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
-	"github.com/MagalixTechnologies/weave-iac-validator/pkg/bitbucket"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-iac-validator/pkg/bitbucket"
 )
 
 const (

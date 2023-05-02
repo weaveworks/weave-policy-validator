@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 )
 
 const (

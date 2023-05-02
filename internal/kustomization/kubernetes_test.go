@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MagalixTechnologies/policy-core/domain"
 	"github.com/stretchr/testify/assert"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
 )
 
 func TestKubernetesKustomizer(t *testing.T) {

@@ -1,4 +1,4 @@
-[![codecov](https://codecov.io/gh/MagalixTechnologies/weave-iac-validator/branch/main/graph/badge.svg?token=T2PlPCEuvG)](https://codecov.io/gh/MagalixTechnologies/weave-iac-validator)
+[![codecov](https://codecov.io/gh/weaveworks/weave-iac-validator/branch/main/graph/badge.svg?token=T2PlPCEuvG)](https://codecov.io/gh/weaveworks/weave-iac-validator)
 
 # Weaveworks Infrastructure as Code Validator
 
@@ -93,7 +93,7 @@ upload_sast:
   stage: sast
   when: always
   script:
-  - echo "creating sast report" 
+  - echo "creating sast report"
   artifacts:
     reports:
       sast: sast.json

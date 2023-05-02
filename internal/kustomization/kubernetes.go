@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
 

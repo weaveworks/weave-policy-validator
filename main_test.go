@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/validator"
 	"github.com/stretchr/testify/assert"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-iac-validator/internal/policy"
+	"github.com/weaveworks/weave-iac-validator/internal/validator"
 )
 
 func TestScanMultipleDirs(t *testing.T) {
@@ -44,7 +44,7 @@ func TestScanMultipleDirs(t *testing.T) {
 		}
 
 		policySource := policy.NewFilesystemSource(policyKustomizer)
-		opaValidator := validation.NewOPAValidator(policySource, false, trigger)
+		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 		validator := validator.NewValidator(opaValidator, false)
 
 		result, err := validator.Validate(ctx, files)

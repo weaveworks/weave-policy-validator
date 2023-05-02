@@ -9,14 +9,14 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/git"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/trie"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/validator"
 	"github.com/urfave/cli/v2"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-iac-validator/internal/git"
+	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
+	"github.com/weaveworks/weave-iac-validator/internal/policy"
+	"github.com/weaveworks/weave-iac-validator/internal/trie"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-iac-validator/internal/validator"
 )
 
 const (
@@ -227,7 +227,8 @@ func App(ctx context.Context, conf Config) error {
 	}
 
 	policySource := policy.NewFilesystemSource(policyKustomizer)
-	opaValidator := validation.NewOPAValidator(policySource, false, trigger)
+	// sinks := []domain.PolicyValidationSink{}
+	opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 	validator := validator.NewValidator(opaValidator, conf.Remediate)
 
 	var gitrepo *git.GitRepository

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 )
 
 var (

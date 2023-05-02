@@ -3,8 +3,9 @@ package validator
 import (
 	"context"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 )
 
 type Validator struct {
@@ -59,7 +60,7 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 						Namespace: entity.Namespace,
 						Kind:      entity.Kind,
 					},
-					Details: getDetails(violation.Details),
+					Details: getDetails(violation.Occurrences),
 				}
 
 				startLine, endLine := 1, 1
@@ -94,15 +95,14 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 	return &results, nil
 }
 
-func getDetails(in map[string]interface{}) types.Details {
+// @todo check if we will handle auto remediating multiple occurences
+func getDetails(occurrences []domain.Occurrence) types.Details {
 	details := types.Details{}
-	if key, ok := in["violating_key"]; ok {
-		if key, ok := key.(string); ok {
-			details.ViolatingKey = &key
-		}
+	if len(occurrences) < 1 {
+		return details
 	}
-	if value, ok := in["recommended_value"]; ok {
-		details.RecommendedValue = value
-	}
+	details.ViolatingKey = occurrences[0].ViolatingKey
+	details.RecommendedValue = occurrences[0].RecommendedValue
+
 	return details
 }

@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
 	"github.com/stretchr/testify/assert"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
+	"github.com/weaveworks/weave-iac-validator/internal/policy"
+	"github.com/weaveworks/weave-iac-validator/internal/types"
 )
 
 func TestValidator(t *testing.T) {
@@ -128,7 +128,7 @@ func TestValidator(t *testing.T) {
 		}
 
 		policySource := policy.NewFilesystemSource(policyKustomizer)
-		opaValidator := validation.NewOPAValidator(policySource, false, "")
+		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 		validator := NewValidator(opaValidator, true)
 
 		ctx := context.Background()
