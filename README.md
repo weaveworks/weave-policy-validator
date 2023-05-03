@@ -59,7 +59,7 @@ See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
 ```yaml
 weave:
   image:
-    name: weaveworks/weave-policy-validator:v1.1
+    name: weaveworks/weave-policy-validator:v1.4
   script:
   - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -81,7 +81,7 @@ stages:
 weave:
   stage: weave
   image:
-    name: weaveworks/weave-policy-validator:v1.1
+    name: weaveworks/weave-policy-validator:v1.4
   script:
   - weave-validator <path to resources> --policies-path <path to policies> --sast sast.json
   artifacts:
@@ -107,7 +107,7 @@ pipelines:
   default:
     - step:
         name: 'Weaveworks'
-        image: weaveworks/weave-policy-validator:v1.1
+        image: weaveworks/weave-policy-validator:v1.4
         script:
           - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -131,7 +131,7 @@ pipelines:
 jobs:
   weave:
     docker:
-    - image: weaveworks/weave-policy-validator:v1.1
+    - image: weaveworks/weave-policy-validator:v1.4
     steps:
     - checkout
     - run:
@@ -156,7 +156,7 @@ pool:
   vmImage: ubuntu-latest
 
 container:
-  image: weaveworks/weave-policy-validator:v1.1-azure
+  image: weaveworks/weave-policy-validator:v1.4-azure
 
 steps:
 - script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN)
