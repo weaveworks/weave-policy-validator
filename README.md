@@ -168,3 +168,15 @@ steps:
 steps:
 - script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN) --remediate
 ```
+
+
+## Contribution
+
+Need help or want to contribute? Please see the links below.
+- Need help?
+    - Talk to us in
+      the [#weave-policy-validator channel](@todo add channel url)
+      on Weaveworks Community Slack. [Invite yourself if you haven't joined yet.](https://slack.weave.works/)
+- Have feature proposals or want to contribute?
+    - Please create a [Github issue](https://github.com/weaveworks/weave-policy-validator/issues)
+    - Learn more about contributing [here](./CONTRIBUTING.md).
