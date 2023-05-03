@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
-	"github.com/weaveworks/weave-iac-validator/internal/policy"
-	"github.com/weaveworks/weave-iac-validator/internal/validator"
+	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/validator"
 )
 
 func TestScanMultipleDirs(t *testing.T) {

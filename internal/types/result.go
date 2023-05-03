@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/weaveworks/weave-iac-validator/internal/markdown"
-	"github.com/weaveworks/weave-iac-validator/internal/sarif"
+	"github.com/weaveworks/weave-policy-validator/internal/markdown"
+	"github.com/weaveworks/weave-policy-validator/internal/sarif"
 	sast "gitlab.com/gitlab-org/security-products/analyzers/report/v3"
 )
 

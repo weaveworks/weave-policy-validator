@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
-	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
-	"github.com/weaveworks/weave-iac-validator/internal/policy"
-	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/kustomization"
+	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
 func TestValidator(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
 const (

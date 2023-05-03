@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
-	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
+	"github.com/weaveworks/weave-policy-validator/internal/kustomization"
 )
 
 type FilesystemPolicySource struct {

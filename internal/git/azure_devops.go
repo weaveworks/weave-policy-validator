@@ -8,12 +8,12 @@ import (
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/git"
-	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
 var (
 	oldObjectId = "0000000000000000000000000000000000000000"
-	author      = "weave-iac-validator"
+	author      = "weave-policy-validator"
 )
 
 type AzureDevopsProvider struct {

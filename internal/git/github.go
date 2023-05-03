@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/v41/github"
-	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 	"golang.org/x/oauth2"
 )
 

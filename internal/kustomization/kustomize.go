@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/weaveworks/weave-iac-validator/internal/types"
-	"github.com/weaveworks/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 
 	"sigs.k8s.io/kustomize/api/konfig"
 	"sigs.k8s.io/kustomize/api/krusty"

@@ -5,7 +5,7 @@ import (
 
 	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
-	"github.com/weaveworks/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
 type Validator struct {

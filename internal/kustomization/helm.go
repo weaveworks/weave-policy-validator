@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/weaveworks/weave-iac-validator/internal/types"
-	"github.com/weaveworks/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"

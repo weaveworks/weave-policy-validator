@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	"github.com/weaveworks/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 )
 
 type File struct {

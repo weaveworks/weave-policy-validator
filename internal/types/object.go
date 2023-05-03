@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
-	"github.com/weaveworks/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 )
 
 const (

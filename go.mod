@@ -1,4 +1,4 @@
-module github.com/weaveworks/weave-iac-validator
+module github.com/weaveworks/weave-policy-validator
 
 go 1.20
 

@@ -13,7 +13,7 @@ then
 
 # Gitlab
 elif [[ ${GITLAB_CI} ]]
-then 
+then
     export WEAVE_REPO_PROVIDER="gitlab"
     export WEAVE_REPO_URL="${CI_PROJECT_PATH}"
     export WEAVE_REPO_BRANCH="${CI_COMMIT_REF_NAME}"
@@ -22,7 +22,7 @@ then
 
 # Bitbucket
 elif [[ ${BITBUCKET_REPO_FULL_NAME} ]]
-then 
+then
     export WEAVE_REPO_PROVIDER="bitbucket"
     export WEAVE_REPO_URL="${BITBUCKET_REPO_FULL_NAME}"
     export WEAVE_REPO_BRANCH="${BITBUCKET_BRANCH}"
@@ -30,7 +30,7 @@ then
 
 # CircleCI
 elif [[ ${CIRCLECI} ]]
-then        
+then
     export WEAVE_REPO_PROVIDER="github"
     export WEAVE_REPO_URL="${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
     export WEAVE_REPO_BRANCH="${CIRCLE_BRANCH}"
@@ -40,4 +40,4 @@ fi
 
 export WEAVE_REPO_BRANCH=${WEAVE_REPO_BRANCH/#$REF_PREFIX}
 
-exec weave-iac-validator "$@"
+exec weave-policy-validator "$@"

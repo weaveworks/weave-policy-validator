@@ -11,12 +11,12 @@ import (
 
 	"github.com/urfave/cli/v2"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
-	"github.com/weaveworks/weave-iac-validator/internal/git"
-	"github.com/weaveworks/weave-iac-validator/internal/kustomization"
-	"github.com/weaveworks/weave-iac-validator/internal/policy"
-	"github.com/weaveworks/weave-iac-validator/internal/trie"
-	"github.com/weaveworks/weave-iac-validator/internal/types"
-	"github.com/weaveworks/weave-iac-validator/internal/validator"
+	"github.com/weaveworks/weave-policy-validator/internal/git"
+	"github.com/weaveworks/weave-policy-validator/internal/kustomization"
+	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/trie"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/validator"
 )
 
 const (
