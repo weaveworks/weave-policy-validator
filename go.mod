@@ -2,20 +2,12 @@ module github.com/weaveworks/weave-policy-validator
 
 go 1.20
 
-// @todo remove the replace after releasing the agent
-replace (
-	github.com/weaveworks/policy-agent/pkg/logger => ../policy-agent/pkg/logger
-	github.com/weaveworks/policy-agent/pkg/opa-core => ../policy-agent/pkg/opa-core
-	github.com/weaveworks/policy-agent/pkg/policy-core => ../policy-agent/pkg/policy-core
-	github.com/weaveworks/policy-agent/pkg/uuid-go => ../policy-agent/pkg/uuid-go
-)
-
 require (
 	github.com/google/go-github/v41 v41.0.0
 	github.com/microsoft/azure-devops-go-api/azuredevops v1.0.0-b5
 	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli/v2 v2.4.0
-	github.com/weaveworks/policy-agent/pkg/policy-core v0.0.0-20230411202038-cd1a97b35eda.6
+	github.com/weaveworks/policy-agent/pkg/policy-core v0.0.0-20230411203714-bf53ac3f4945
 	github.com/xanzy/go-gitlab v0.61.0
 	gitlab.com/gitlab-org/security-products/analyzers/report/v3 v3.12.0
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8

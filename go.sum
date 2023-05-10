@@ -1066,6 +1066,14 @@ github.com/vishvananda/netlink v1.1.1-0.20201029203352-d40f9887b852/go.mod h1:tw
 github.com/vishvananda/netns v0.0.0-20180720170159-13995c7128cc/go.mod h1:ZjcWmFBXmLKZu9Nxj3WKYEafiSqer2rnvPr0en9UNpI=
 github.com/vishvananda/netns v0.0.0-20191106174202-0a2b9b5464df/go.mod h1:JP3t17pCcGlemwknint6hfoeCVQrEMVwxRLRjXpq+BU=
 github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae/go.mod h1:DD4vA1DwXk04H54A1oHXtwZmA0grkVMdPxx/VGLCah0=
+github.com/weaveworks/policy-agent/pkg/logger v0.0.0-20230411201136-3d0c79150c68 h1:1q8akiRYaEAq3mOHlEoGR1UlleCWnL8uozXfPw0WnGI=
+github.com/weaveworks/policy-agent/pkg/logger v0.0.0-20230411201136-3d0c79150c68/go.mod h1:QzCLIuqaKiVEGJqW3LOark8p9GQ4YcgbRDTG9S1baM4=
+github.com/weaveworks/policy-agent/pkg/opa-core v0.0.0-20230411202038-cd1a97b35eda h1:rayhmy0uTyMSwQV8iI3RRLNR+W5xrXwdbBFWxWhdV/g=
+github.com/weaveworks/policy-agent/pkg/opa-core v0.0.0-20230411202038-cd1a97b35eda/go.mod h1:MwRlDt6p01tiUAIR9hDiz7Ib/3btvRxBnLq4cc7LDS0=
+github.com/weaveworks/policy-agent/pkg/policy-core v0.0.0-20230411203714-bf53ac3f4945 h1:JPdM6/TVDXmc4sH/FBzAWZyULC5wjJj55BMsZ+JgwS0=
+github.com/weaveworks/policy-agent/pkg/policy-core v0.0.0-20230411203714-bf53ac3f4945/go.mod h1:qo1FabnoC3x2Vn1TEP535NGYNAhLumwDIoy8ID2+fGs=
+github.com/weaveworks/policy-agent/pkg/uuid-go v0.0.0-20230411202038-cd1a97b35eda h1:FxNy08+kChBXVWLzlsfVFwgjcdL8CqjVAVkaYeCT6/E=
+github.com/weaveworks/policy-agent/pkg/uuid-go v0.0.0-20230411202038-cd1a97b35eda/go.mod h1:2ZwzI+1qRXCYkb482qNqbZ60dF1y+PuTCyqHfsXPTRU=
 github.com/willf/bitset v1.1.11-0.20200630133818-d5bec3311243/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/willf/bitset v1.1.11/go.mod h1:83CECat5yLh5zVOf4P1ErAgKA5UDvKtgyUABdr3+MjI=
 github.com/xanzy/go-gitlab v0.61.0 h1:sPeRduwe8/8z32nw/5ogQ8f5GP1X096azK4VEq4d5qI=
