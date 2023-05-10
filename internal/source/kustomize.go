@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -24,18 +24,18 @@ type KustomizationFile struct {
 }
 
 type Kustomize struct {
-	Path       string
-	kustomizer *krusty.Kustomizer
-	fs         filesys.FileSystem
-	k          ktypes.Kustomization
+	Path   string
+	source *krusty.Source
+	fs     filesys.FileSystem
+	k      ktypes.Kustomization
 }
 
-func NewKustomizeKustomizer(path string) *Kustomize {
+func NewKustomizeSource(path string) *Kustomize {
 	opts := krusty.MakeDefaultOptions()
 	return &Kustomize{
-		Path:       path,
-		kustomizer: krusty.MakeKustomizer(opts),
-		fs:         filesys.MakeFsOnDisk(),
+		Path:   path,
+		source: krusty.MakeSource(opts),
+		fs:     filesys.MakeFsOnDisk(),
 	}
 }
 
@@ -49,7 +49,7 @@ func (k *Kustomize) ResourceFiles(_ context.Context) ([]*types.File, error) {
 		return nil, err
 	}
 
-	resmap, err := k.kustomizer.Run(k.fs, k.Path)
+	resmap, err := k.source.Run(k.fs, k.Path)
 	if err != nil {
 		return nil, err
 	}

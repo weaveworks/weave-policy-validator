@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -17,7 +17,7 @@ type Helm struct {
 	valueFile *string
 }
 
-func NewHelmKustomizer(path string) *Helm {
+func NewHelmSource(path string) *Helm {
 	return &Helm{Path: path}
 }
 

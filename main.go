@@ -12,8 +12,8 @@ import (
 	"github.com/urfave/cli/v2"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
 	"github.com/weaveworks/weave-policy-validator/internal/git"
-	"github.com/weaveworks/weave-policy-validator/internal/kustomization"
 	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/source"
 	"github.com/weaveworks/weave-policy-validator/internal/trie"
 	"github.com/weaveworks/weave-policy-validator/internal/types"
 	"github.com/weaveworks/weave-policy-validator/internal/validator"
@@ -221,12 +221,12 @@ func App(ctx context.Context, conf Config) error {
 		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
-	policyKustomizer, err := getKustomizer(conf.PoliciesKustomizeConf)
+	policySource, err := getSource(conf.PoliciesKustomizeConf)
 	if err != nil {
-		return fmt.Errorf("failed to init policies kustomizer, error: %v", err)
+		return fmt.Errorf("failed to init policies source, error: %v", err)
 	}
 
-	policySource := policy.NewFilesystemSource(policyKustomizer)
+	policySource := policy.NewFilesystemSource(policySource)
 	// sinks := []domain.PolicyValidationSink{}
 	opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 	validator := validator.NewValidator(opaValidator, conf.Remediate)
@@ -320,17 +320,17 @@ func App(ctx context.Context, conf Config) error {
 	return nil
 }
 
-func getKustomizer(conf KustomizationConf) (kustomization.Kustomizer, error) {
-	kustomizer, err := kustomization.GetKustomizerFromPath(conf.Path)
+func getSource(conf KustomizationConf) (source.Source, error) {
+	source, err := source.GetSourceFromPath(conf.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	if kustomizer.Type() == kustomization.HelmType && conf.HelmValuesFile != "" {
-		kustomizer.(*kustomization.Helm).SetValueFile(conf.HelmValuesFile)
+	if source.Type() == source.HelmType && conf.HelmValuesFile != "" {
+		source.(*source.Helm).SetValueFile(conf.HelmValuesFile)
 	}
 
-	return kustomizer, nil
+	return source, nil
 }
 
 func scan(ctx context.Context, conf KustomizationConf) ([]*types.File, error) {
@@ -356,9 +356,9 @@ func scan(ctx context.Context, conf KustomizationConf) ([]*types.File, error) {
 		}
 
 		conf.Path = path
-		if kustomizer, err := getKustomizer(conf); err == nil {
+		if source, err := getSource(conf); err == nil {
 			t.Insert(path)
-			kfiles, err := kustomizer.ResourceFiles(ctx)
+			kfiles, err := source.ResourceFiles(ctx)
 			if err != nil {
 				return nil, fmt.Errorf("failed to get resources, path: %s, error: %v", path, err)
 			}

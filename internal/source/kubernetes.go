@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type Kubernetes struct {
 	Path string
 }
 
-func NewKubernetesKustomizer(path string) *Kubernetes {
+func NewKubernetesSource(path string) *Kubernetes {
 	return &Kubernetes{Path: path}
 }
 

@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
 )
 
-func TestHelmKustomizer(t *testing.T) {
+func TestHelmSource(t *testing.T) {
 	tests := []struct {
 		path          string
 		valuesFile    string
@@ -110,10 +110,10 @@ func TestHelmKustomizer(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		kustomizer := NewHelmKustomizer(test.path)
-		kustomizer.SetValueFile(test.valuesFile)
+		source := NewHelmSource(test.path)
+		source.SetValueFile(test.valuesFile)
 
-		files, err := kustomizer.ResourceFiles(context.Background())
+		files, err := source.ResourceFiles(context.Background())
 		if err != nil {
 			t.Errorf("failed to get resouces, error: %v", err)
 		}

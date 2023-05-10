@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"path/filepath"

@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
-	"github.com/weaveworks/weave-policy-validator/internal/kustomization"
 	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/source"
 	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
@@ -111,28 +111,28 @@ func TestValidator(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		entityKustomizer, err := kustomization.GetKustomizerFromPath(test.path)
+		entitySource, err := source.GetSourceFromPath(test.path)
 		if err != nil {
 			t.Error(err)
 		}
-		if entityKustomizer.Type() == kustomization.HelmType {
-			entityKustomizer.(*kustomization.Helm).SetValueFile(test.helmValuesPath)
+		if entitySource.Type() == source.HelmType {
+			entitySource.(*source.Helm).SetValueFile(test.helmValuesPath)
 		}
 
-		policyKustomizer, err := kustomization.GetKustomizerFromPath(test.policiesPath)
+		policySource, err := source.GetSourceFromPath(test.policiesPath)
 		if err != nil {
 			t.Error(err)
 		}
-		if policyKustomizer.Type() == kustomization.HelmType {
-			policyKustomizer.(*kustomization.Helm).SetValueFile(test.policiesHelmValuesPath)
+		if policySource.Type() == source.HelmType {
+			policySource.(*source.Helm).SetValueFile(test.policiesHelmValuesPath)
 		}
 
-		policySource := policy.NewFilesystemSource(policyKustomizer)
+		policySource := policy.NewFilesystemSource(policySource)
 		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 		validator := NewValidator(opaValidator, true)
 
 		ctx := context.Background()
-		files, err := entityKustomizer.ResourceFiles(ctx)
+		files, err := entitySource.ResourceFiles(ctx)
 		if err != nil {
 			t.Error(err)
 		}

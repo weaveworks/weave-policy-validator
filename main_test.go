@@ -38,12 +38,12 @@ func TestScanMultipleDirs(t *testing.T) {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policyKustomizer, err := getKustomizer(KustomizationConf{Path: test.policiesPath})
+		policySource, err := getSource(KustomizationConf{Path: test.policiesPath})
 		if err != nil {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policySource := policy.NewFilesystemSource(policyKustomizer)
+		policySource := policy.NewFilesystemSource(policySource)
 		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
 		validator := validator.NewValidator(opaValidator, false)
 

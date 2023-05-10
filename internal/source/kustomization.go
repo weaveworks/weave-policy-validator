@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -13,24 +13,24 @@ const (
 	KubernetesType = "kubernetes"
 )
 
-type Kustomizer interface {
+type Source interface {
 	Type() string
 	IsValidPath() bool
 	ResourceFiles(context.Context) ([]*types.File, error)
 }
 
-func GetKustomizerFromPath(path string) (Kustomizer, error) {
-	helm := NewHelmKustomizer(path)
+func GetSourceFromPath(path string) (Source, error) {
+	helm := NewHelmSource(path)
 	if helm.IsValidPath() {
 		return helm, nil
 	}
 
-	kustomize := NewKustomizeKustomizer(path)
+	kustomize := NewKustomizeSource(path)
 	if kustomize.IsValidPath() {
 		return kustomize, nil
 	}
 
-	kubernetes := NewKubernetesKustomizer(path)
+	kubernetes := NewKubernetesSource(path)
 	if kubernetes.IsValidPath() {
 		return kubernetes, nil
 	}
