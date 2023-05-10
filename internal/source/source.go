@@ -35,5 +35,5 @@ func GetSourceFromPath(path string) (Source, error) {
 		return kubernetes, nil
 	}
 
-	return nil, errors.New("path is not recognized as a kustomization valid path")
+	return nil, errors.New("path is not recognized as a valid path")
 }

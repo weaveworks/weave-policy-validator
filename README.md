@@ -4,7 +4,7 @@
 
 Validates infrastucture as code against weave policies
 
-## Supported Kustomizations
+## Supported Resources
 - [x] Helm
 - [x] Kustomize
 
@@ -30,7 +30,7 @@ COMMANDS:
 GLOBAL OPTIONS:
    --path value                       path to scan resources from
    --helm-values-file value           path to resources helm values file
-   --policies-path value              path to policies kustomization directory
+   --policies-path value              path to policies source directory
    --policies-helm-values-file value  path to policies helm values file
    --git-repo-provider value          git repository provider [$WEAVE_REPO_PROVIDER]
    --git-repo-host value              git repository host [$WEAVE_REPO_HOST]

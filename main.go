@@ -23,14 +23,14 @@ const (
 	trigger string = "iac"
 )
 
-type KustomizationConf struct {
+type SourceConf struct {
 	Path           string
 	HelmValuesFile string
 }
 
 type Config struct {
-	EntityKustomizeConf   KustomizationConf
-	PoliciesKustomizeConf KustomizationConf
+	EntitySourceConf   SourceConf
+	PoliciesSourceConf SourceConf
 
 	// output config
 	NoExitError     bool
@@ -92,24 +92,24 @@ func main() {
 		&cli.StringFlag{
 			Name:        "path",
 			Usage:       "path to scan resources from",
-			Destination: &conf.EntityKustomizeConf.Path,
+			Destination: &conf.EntitySourceConf.Path,
 			Required:    true,
 		},
 		&cli.StringFlag{
 			Name:        "helm-values-file",
 			Usage:       "path to resources helm values file",
-			Destination: &conf.EntityKustomizeConf.HelmValuesFile,
+			Destination: &conf.EntitySourceConf.HelmValuesFile,
 		},
 		&cli.StringFlag{
 			Name:        "policies-path",
 			Usage:       "path to policies kustomization directory",
 			Required:    true,
-			Destination: &conf.PoliciesKustomizeConf.Path,
+			Destination: &conf.PoliciesSourceConf.Path,
 		},
 		&cli.StringFlag{
 			Name:        "policies-helm-values-file",
 			Usage:       "path to policies helm values file",
-			Destination: &conf.PoliciesKustomizeConf.HelmValuesFile,
+			Destination: &conf.PoliciesSourceConf.HelmValuesFile,
 		},
 		&cli.StringFlag{
 			Name:        "git-repo-provider",
@@ -191,10 +191,10 @@ func main() {
 
 	app.Before = func(context *cli.Context) error {
 		var err error
-		if conf.EntityKustomizeConf.Path, err = filepath.Abs(conf.EntityKustomizeConf.Path); err != nil {
+		if conf.EntitySourceConf.Path, err = filepath.Abs(conf.EntitySourceConf.Path); err != nil {
 			return fmt.Errorf("invalid entities path: %w", err)
 		}
-		if conf.PoliciesKustomizeConf.Path, err = filepath.Abs(conf.PoliciesKustomizeConf.Path); err != nil {
+		if conf.PoliciesSourceConf.Path, err = filepath.Abs(conf.PoliciesSourceConf.Path); err != nil {
 			return fmt.Errorf("invalid policies path: %w", err)
 		}
 		if conf.Remediate || conf.GenerateGitProviderReport {
@@ -216,19 +216,19 @@ func main() {
 }
 
 func App(ctx context.Context, conf Config) error {
-	files, err := scan(ctx, conf.EntityKustomizeConf)
+	files, err := scan(ctx, conf.EntitySourceConf)
 	if err != nil {
 		return fmt.Errorf("failed to get resources, error: %v", err)
 	}
 
-	policySource, err := getSource(conf.PoliciesKustomizeConf)
+	policySource, err := getSource(conf.PoliciesSourceConf)
 	if err != nil {
 		return fmt.Errorf("failed to init policies source, error: %v", err)
 	}
 
-	policySource := policy.NewFilesystemSource(policySource)
+	fsPolicySource := policy.NewFilesystemSource(policySource)
 	// sinks := []domain.PolicyValidationSink{}
-	opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
+	opaValidator := validation.NewOPAValidator(fsPolicySource, false, "", "", "", false)
 	validator := validator.NewValidator(opaValidator, conf.Remediate)
 
 	var gitrepo *git.GitRepository
@@ -320,20 +320,20 @@ func App(ctx context.Context, conf Config) error {
 	return nil
 }
 
-func getSource(conf KustomizationConf) (source.Source, error) {
-	source, err := source.GetSourceFromPath(conf.Path)
+func getSource(conf SourceConf) (source.Source, error) {
+	s, err := source.GetSourceFromPath(conf.Path)
 	if err != nil {
 		return nil, err
 	}
 
-	if source.Type() == source.HelmType && conf.HelmValuesFile != "" {
-		source.(*source.Helm).SetValueFile(conf.HelmValuesFile)
+	if s.Type() == source.HelmType && conf.HelmValuesFile != "" {
+		s.(*source.Helm).SetValueFile(conf.HelmValuesFile)
 	}
 
-	return source, nil
+	return s, nil
 }
 
-func scan(ctx context.Context, conf KustomizationConf) ([]*types.File, error) {
+func scan(ctx context.Context, conf SourceConf) ([]*types.File, error) {
 	var paths []string
 	err := filepath.Walk(conf.Path, func(path string, _ os.FileInfo, err error) error {
 		if err != nil {

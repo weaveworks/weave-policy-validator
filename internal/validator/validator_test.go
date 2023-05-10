@@ -127,8 +127,8 @@ func TestValidator(t *testing.T) {
 			policySource.(*source.Helm).SetValueFile(test.policiesHelmValuesPath)
 		}
 
-		policySource := policy.NewFilesystemSource(policySource)
-		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
+		fsPolicySource := policy.NewFilesystemSource(policySource)
+		opaValidator := validation.NewOPAValidator(fsPolicySource, false, "", "", "", false)
 		validator := NewValidator(opaValidator, true)
 
 		ctx := context.Background()

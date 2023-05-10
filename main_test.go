@@ -29,7 +29,7 @@ func TestScanMultipleDirs(t *testing.T) {
 
 	for _, test := range tests {
 		ctx := context.Background()
-		files, err := scan(ctx, KustomizationConf{
+		files, err := scan(ctx, SourceConf{
 			Path:           test.path,
 			HelmValuesFile: test.valuesFile,
 		})
@@ -38,13 +38,13 @@ func TestScanMultipleDirs(t *testing.T) {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policySource, err := getSource(KustomizationConf{Path: test.policiesPath})
+		policySource, err := getSource(SourceConf{Path: test.policiesPath})
 		if err != nil {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policySource := policy.NewFilesystemSource(policySource)
-		opaValidator := validation.NewOPAValidator(policySource, false, "", "", "", false)
+		fsPolicySource := policy.NewFilesystemSource(policySource)
+		opaValidator := validation.NewOPAValidator(fsPolicySource, false, "", "", "", false)
 		validator := validator.NewValidator(opaValidator, false)
 
 		result, err := validator.Validate(ctx, files)

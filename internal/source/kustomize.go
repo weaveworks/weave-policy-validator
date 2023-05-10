@@ -25,7 +25,7 @@ type KustomizationFile struct {
 
 type Kustomize struct {
 	Path   string
-	source *krusty.Source
+	source *krusty.Kustomizer
 	fs     filesys.FileSystem
 	k      ktypes.Kustomization
 }
@@ -34,7 +34,7 @@ func NewKustomizeSource(path string) *Kustomize {
 	opts := krusty.MakeDefaultOptions()
 	return &Kustomize{
 		Path:   path,
-		source: krusty.MakeSource(opts),
+		source: krusty.MakeKustomizer(opts),
 		fs:     filesys.MakeFsOnDisk(),
 	}
 }
