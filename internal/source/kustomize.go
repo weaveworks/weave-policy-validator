@@ -161,11 +161,6 @@ func parseKustomizationFile(path string) (*KustomizationFile, error) {
 
 	node := nodes[0]
 
-	in, err = ktypes.FixKustomizationPreUnmarshalling(in)
-	if err != nil {
-		return nil, err
-	}
-
 	var obj ktypes.Kustomization
 	err = yaml.Unmarshal(in, &obj)
 	if err != nil {
