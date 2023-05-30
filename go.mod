@@ -7,7 +7,7 @@ require (
 	github.com/microsoft/azure-devops-go-api/azuredevops v1.0.0-b5
 	github.com/stretchr/testify v1.8.2
 	github.com/urfave/cli/v2 v2.4.0
-	github.com/weaveworks/policy-agent/pkg/policy-core v0.0.0-20230411203714-bf53ac3f4945
+	github.com/weaveworks/policy-agent/pkg/policy-core v1.2.0
 	github.com/xanzy/go-gitlab v0.61.0
 	gitlab.com/gitlab-org/security-products/analyzers/report/v3 v3.12.0
 	golang.org/x/oauth2 v0.4.0
@@ -82,9 +82,9 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/tchap/go-patricia/v2 v2.3.1 // indirect
-	github.com/weaveworks/policy-agent/pkg/logger v0.0.0-20230411201136-3d0c79150c68 // indirect
-	github.com/weaveworks/policy-agent/pkg/opa-core v0.0.0-20230411202038-cd1a97b35eda // indirect
-	github.com/weaveworks/policy-agent/pkg/uuid-go v0.0.0-20230411202038-cd1a97b35eda // indirect
+	github.com/weaveworks/policy-agent/pkg/logger v1.1.0 // indirect
+	github.com/weaveworks/policy-agent/pkg/opa-core v1.1.0 // indirect
+	github.com/weaveworks/policy-agent/pkg/uuid-go v0.1.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
