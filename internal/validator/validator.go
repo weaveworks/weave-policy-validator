@@ -2,9 +2,10 @@ package validator
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 )
 
 type Validator struct {
@@ -43,66 +44,58 @@ func (v *Validator) Validate(ctx context.Context, files []*types.File) (*types.R
 			}
 
 			for _, violation := range summary.Violations {
-				result := types.Violation{
-					ID:      violation.ID,
-					Message: violation.Message,
-					Policy: types.Policy{
-						ID:          violation.Policy.ID,
-						Name:        violation.Policy.Name,
-						Severity:    violation.Policy.Severity,
-						Category:    violation.Policy.Category,
-						Description: violation.Policy.Description,
-						HowToSolve:  violation.Policy.HowToSolve,
-					},
-					Entity: types.Entity{
-						Name:      entity.Name,
-						Namespace: entity.Namespace,
-						Kind:      entity.Kind,
-					},
-					Details: getDetails(violation.Details),
-				}
-
-				startLine, endLine := 1, 1
-				if result.Details.ViolatingKey != nil {
-					startLine, endLine = resource.FindKey(*result.Details.ViolatingKey)
-					if endLine < startLine {
-						endLine = startLine
+				for id, occurence := range violation.Occurrences {
+					result := types.Violation{
+						ID:      fmt.Sprintf("%s_%v", violation.ID, id),
+						Message: violation.Message,
+						Policy: types.Policy{
+							ID:          violation.Policy.ID,
+							Name:        violation.Policy.Name,
+							Severity:    violation.Policy.Severity,
+							Category:    violation.Policy.Category,
+							Description: violation.Policy.Description,
+							HowToSolve:  violation.Policy.HowToSolve,
+						},
+						Entity: types.Entity{
+							Name:      entity.Name,
+							Namespace: entity.Namespace,
+							Kind:      entity.Kind,
+						},
+						Details: types.Details{
+							ViolatingKey:     occurence.ViolatingKey,
+							RecommendedValue: occurence.RecommendedValue,
+						},
 					}
 
-					if v.remediate && result.Details.RecommendedValue != nil {
-						remediated, err := resource.Remediate(*result.Details.ViolatingKey, result.Details.RecommendedValue)
-						if err == nil && remediated {
-							file.Remediated = true
-							resource.Remediated = true
-							results.Remediated++
+					startLine, endLine := 1, 1
+					if result.Details.ViolatingKey != nil {
+						startLine, endLine = resource.FindKey(*result.Details.ViolatingKey)
+						if endLine < startLine {
+							endLine = startLine
+						}
+
+						if v.remediate && result.Details.RecommendedValue != nil {
+							remediated, err := resource.Remediate(*result.Details.ViolatingKey, result.Details.RecommendedValue)
+							if err == nil && remediated {
+								file.Remediated = true
+								resource.Remediated = true
+								results.Remediated++
+							}
 						}
 					}
-				}
 
-				result.Location = types.Location{
-					Path:      file.Path,
-					StartLine: startLine,
-					EndLine:   endLine,
-				}
+					result.Location = types.Location{
+						Path:      file.Path,
+						StartLine: startLine,
+						EndLine:   endLine,
+					}
 
-				results.Violations = append(results.Violations, result)
-				results.ViolationCount++
+					results.Violations = append(results.Violations, result)
+					results.ViolationCount++
+				}
 			}
 			results.Scanned++
 		}
 	}
 	return &results, nil
-}
-
-func getDetails(in map[string]interface{}) types.Details {
-	details := types.Details{}
-	if key, ok := in["violating_key"]; ok {
-		if key, ok := key.(string); ok {
-			details.ViolatingKey = &key
-		}
-	}
-	if value, ok := in["recommended_value"]; ok {
-		details.RecommendedValue = value
-	}
-	return details
 }

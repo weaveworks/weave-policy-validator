@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 
 	"sigs.k8s.io/kustomize/api/konfig"
 	"sigs.k8s.io/kustomize/api/krusty"
@@ -24,18 +24,18 @@ type KustomizationFile struct {
 }
 
 type Kustomize struct {
-	Path       string
-	kustomizer *krusty.Kustomizer
-	fs         filesys.FileSystem
-	k          ktypes.Kustomization
+	Path   string
+	source *krusty.Kustomizer
+	fs     filesys.FileSystem
+	k      ktypes.Kustomization
 }
 
-func NewKustomizeKustomizer(path string) *Kustomize {
+func NewKustomizeSource(path string) *Kustomize {
 	opts := krusty.MakeDefaultOptions()
 	return &Kustomize{
-		Path:       path,
-		kustomizer: krusty.MakeKustomizer(opts),
-		fs:         filesys.MakeFsOnDisk(),
+		Path:   path,
+		source: krusty.MakeKustomizer(opts),
+		fs:     filesys.MakeFsOnDisk(),
 	}
 }
 
@@ -49,7 +49,7 @@ func (k *Kustomize) ResourceFiles(_ context.Context) ([]*types.File, error) {
 		return nil, err
 	}
 
-	resmap, err := k.kustomizer.Run(k.fs, k.Path)
+	resmap, err := k.source.Run(k.fs, k.Path)
 	if err != nil {
 		return nil, err
 	}
@@ -160,11 +160,6 @@ func parseKustomizationFile(path string) (*KustomizationFile, error) {
 	}
 
 	node := nodes[0]
-
-	in, err = ktypes.FixKustomizationPreUnmarshalling(in)
-	if err != nil {
-		return nil, err
-	}
 
 	var obj ktypes.Kustomization
 	err = yaml.Unmarshal(in, &obj)

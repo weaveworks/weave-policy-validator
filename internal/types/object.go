@@ -3,8 +3,8 @@ package types
 import (
 	"strings"
 
-	"github.com/MagalixTechnologies/policy-core/domain"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 )
 
 const (

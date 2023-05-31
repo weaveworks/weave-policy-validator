@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 	"github.com/xanzy/go-gitlab"
 )
 

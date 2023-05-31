@@ -1,12 +1,12 @@
-package kustomization
+package source
 
 import (
 	"context"
 	"path/filepath"
 	"strings"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/yaml"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/yaml"
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/engine"
@@ -17,7 +17,7 @@ type Helm struct {
 	valueFile *string
 }
 
-func NewHelmKustomizer(path string) *Helm {
+func NewHelmSource(path string) *Helm {
 	return &Helm{Path: path}
 }
 

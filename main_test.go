@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/MagalixTechnologies/policy-core/validation"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/policy"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/validator"
 	"github.com/stretchr/testify/assert"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/validation"
+	"github.com/weaveworks/weave-policy-validator/internal/policy"
+	"github.com/weaveworks/weave-policy-validator/internal/validator"
 )
 
 func TestScanMultipleDirs(t *testing.T) {
@@ -29,7 +29,7 @@ func TestScanMultipleDirs(t *testing.T) {
 
 	for _, test := range tests {
 		ctx := context.Background()
-		files, err := scan(ctx, KustomizationConf{
+		files, err := scan(ctx, SourceConf{
 			Path:           test.path,
 			HelmValuesFile: test.valuesFile,
 		})
@@ -38,13 +38,13 @@ func TestScanMultipleDirs(t *testing.T) {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policyKustomizer, err := getKustomizer(KustomizationConf{Path: test.policiesPath})
+		policySource, err := getSource(SourceConf{Path: test.policiesPath})
 		if err != nil {
 			t.Fatalf("unexpected error, %v", err)
 		}
 
-		policySource := policy.NewFilesystemSource(policyKustomizer)
-		opaValidator := validation.NewOPAValidator(policySource, false, trigger)
+		fsPolicySource := policy.NewFilesystemSource(policySource)
+		opaValidator := validation.NewOPAValidator(fsPolicySource, false, "", "", "", false)
 		validator := validator.NewValidator(opaValidator, false)
 
 		result, err := validator.Validate(ctx, files)

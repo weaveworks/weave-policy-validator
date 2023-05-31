@@ -1,4 +1,4 @@
-package kustomization
+package source
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/types"
+	"github.com/weaveworks/weave-policy-validator/internal/types"
 	"sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
@@ -15,7 +15,7 @@ type Kubernetes struct {
 	Path string
 }
 
-func NewKubernetesKustomizer(path string) *Kubernetes {
+func NewKubernetesSource(path string) *Kubernetes {
 	return &Kubernetes{Path: path}
 }
 

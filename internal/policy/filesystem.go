@@ -4,24 +4,24 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/MagalixTechnologies/policy-core/domain"
-	"github.com/MagalixTechnologies/weave-iac-validator/internal/kustomization"
+	"github.com/weaveworks/policy-agent/pkg/policy-core/domain"
+	"github.com/weaveworks/weave-policy-validator/internal/source"
 )
 
 type FilesystemPolicySource struct {
-	kustomizer kustomization.Kustomizer
+	source source.Source
 }
 
 // NewFilesystemSource creates new Policy filesystem source
-func NewFilesystemSource(kustomizer kustomization.Kustomizer) *FilesystemPolicySource {
+func NewFilesystemSource(source source.Source) *FilesystemPolicySource {
 	return &FilesystemPolicySource{
-		kustomizer: kustomizer,
+		source: source,
 	}
 }
 
 // GetAll gets all policies
 func (l *FilesystemPolicySource) GetAll(ctx context.Context) ([]domain.Policy, error) {
-	files, err := l.kustomizer.ResourceFiles(ctx)
+	files, err := l.source.ResourceFiles(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get kustomization resources, error: %v", err)
 	}
@@ -39,4 +39,8 @@ func (l *FilesystemPolicySource) GetAll(ctx context.Context) ([]domain.Policy, e
 		}
 	}
 	return policies, nil
+}
+
+func (l *FilesystemPolicySource) GetPolicyConfig(ctx context.Context, entity domain.Entity) (*domain.PolicyConfig, error) {
+	return nil, nil
 }

@@ -14,4 +14,4 @@ export WEAVE_REPO_SHA="${BUILD_SOURCEVERSION}"
 export AZURE_PROJECT="${SYSTEM_TEAMPROJECT}"
 
 
-exec weave-iac-validator "$@"
+exec weave-policy-validator "$@"

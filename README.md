@@ -1,10 +1,10 @@
-[![codecov](https://codecov.io/gh/MagalixTechnologies/weave-iac-validator/branch/main/graph/badge.svg?token=T2PlPCEuvG)](https://codecov.io/gh/MagalixTechnologies/weave-iac-validator)
+[![codecov](https://codecov.io/gh/weaveworks/weave-policy-validator/branch/main/graph/badge.svg?token=T2PlPCEuvG)](https://codecov.io/gh/weaveworks/weave-policy-validator)
 
 # Weaveworks Infrastructure as Code Validator
 
 Validates infrastucture as code against weave policies
 
-## Supported Kustomizations
+## Supported Resources
 - [x] Helm
 - [x] Kustomize
 
@@ -30,7 +30,7 @@ COMMANDS:
 GLOBAL OPTIONS:
    --path value                       path to scan resources from
    --helm-values-file value           path to resources helm values file
-   --policies-path value              path to policies kustomization directory
+   --policies-path value              path to policies source directory
    --policies-helm-values-file value  path to policies helm values file
    --git-repo-provider value          git repository provider [$WEAVE_REPO_PROVIDER]
    --git-repo-host value              git repository host [$WEAVE_REPO_HOST]
@@ -59,7 +59,7 @@ See how to setup the [Github Action](https://github.com/weaveworks/weave-action)
 ```yaml
 weave:
   image:
-    name: weaveworks/weave-iac-validator:v1.1
+    name: weaveworks/weave-policy-validator:v1.4
   script:
   - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -81,7 +81,7 @@ stages:
 weave:
   stage: weave
   image:
-    name: weaveworks/weave-iac-validator:v1.1
+    name: weaveworks/weave-policy-validator:v1.4
   script:
   - weave-validator <path to resources> --policies-path <path to policies> --sast sast.json
   artifacts:
@@ -93,7 +93,7 @@ upload_sast:
   stage: sast
   when: always
   script:
-  - echo "creating sast report" 
+  - echo "creating sast report"
   artifacts:
     reports:
       sast: sast.json
@@ -107,7 +107,7 @@ pipelines:
   default:
     - step:
         name: 'Weaveworks'
-        image: weaveworks/weave-iac-validator:v1.1
+        image: weaveworks/weave-policy-validator:v1.4
         script:
           - weave-validator --path <path to resources> --policies-path <path to policies>
 ```
@@ -131,7 +131,7 @@ pipelines:
 jobs:
   weave:
     docker:
-    - image: weaveworks/weave-iac-validator:v1.1
+    - image: weaveworks/weave-policy-validator:v1.4
     steps:
     - checkout
     - run:
@@ -156,7 +156,7 @@ pool:
   vmImage: ubuntu-latest
 
 container:
-  image: weaveworks/weave-iac-validator:v1.1-azure
+  image: weaveworks/weave-policy-validator:v1.4-azure
 
 steps:
 - script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN)
@@ -168,3 +168,15 @@ steps:
 steps:
 - script: weave-validator --path <path to resources> --policies-path <path to policies> --git-repo-token $(TOKEN) --remediate
 ```
+
+
+## Contribution
+
+Need help or want to contribute? Please see the links below.
+- Need help?
+    - Talk to us in
+      the [#weave-policy-validator channel](@todo add channel url)
+      on Weaveworks Community Slack. [Invite yourself if you haven't joined yet.](https://slack.weave.works/)
+- Have feature proposals or want to contribute?
+    - Please create a [Github issue](https://github.com/weaveworks/weave-policy-validator/issues)
+    - Learn more about contributing [here](./CONTRIBUTING.md).
