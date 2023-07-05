@@ -18,6 +18,10 @@ Copy the [policies](https://github.com/weaveworks/policy-agent/tree/master/polic
 
 Copy the Weave Policy Validator [Github Action](./weave-policy-validator-gh-action.yml) to the root of repository under (`.github/workflows/weave-policy-validator-gh-action.yml`)
 
+Allow creating PRs permission for Github actions from the repository settings
+
+  ![settings](imgs/violation5.png)
+
 The repository structure should be something like the one below
 
   ```bash
