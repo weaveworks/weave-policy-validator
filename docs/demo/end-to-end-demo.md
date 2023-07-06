@@ -14,9 +14,9 @@
 
 Install the [Policy Agent](https://github.com/weaveworks/policy-agent/blob/dev/docs/getting-started.md) and make sure to install the policies in your cluster.
 
-Copy the [policies](https://github.com/weaveworks/policy-agent/tree/master/policies) to the root of the repository (for commit time validation)
+Copy the [policies](https://github.com/weaveworks/policy-agent/tree/master/policies) to the root of the repository to be used by the commit time validation.
 
-Copy the Weave Policy Validator [Github Action](./weave-policy-validator-gh-action.yml) to the root of repository under (`.github/workflows/weave-policy-validator-gh-action.yml`)
+Copy the Weave Policy Validator [Github Action](./weave-policy-validator-gh-action.yml) to your repository under the workflows ex: `.github/workflows/weave-policy-validator-gh-action.yml`
 
 Allow creating PRs permission for Github actions from the repository settings
 
@@ -82,7 +82,7 @@ If a file sneaked somehow into the repository to the cluster, then the Policy Ag
 
 Go ahead and push the file `clusters/my-cluster/violating-service.yaml` directly into `main` to skip the CI checks
 
-Flux reconcillation will fail with the following error and the violating service will not be applied to the cluster
+The Policy Agent's admission controller will reject the creation of the service causing the Flux reconciliation to fail with the following error and the violating service will not be applied to the cluster
 
   ![flux reconcile](./imgs/violation4.png)
 
