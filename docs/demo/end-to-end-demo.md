@@ -7,7 +7,7 @@
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [Policy Agent](https://github.com/weaveworks/policy-agent/blob/dev/docs/getting-started.md)
 - [Weave Policy Validator](https://github.com/weaveworks/weave-policy-validator/blob/main/README.md)
-- [Violating Service](./violating-service.yaml)
+- Violating Service
 
 
 ## Configurations
@@ -18,11 +18,33 @@ Copy the [policies](https://github.com/weaveworks/policy-agent/tree/master/polic
 
 Copy the Weave Policy Validator [Github Action](./weave-policy-validator-gh-action.yml) to your repository under the workflows ex: `.github/workflows/weave-policy-validator-gh-action.yml`
 
-Allow creating PRs permission for Github actions from the repository settings
+<details>
+  <summary>weave-policy-validator-gh-action.yml - Click to expand .. </summary>
+
+```yaml
+name: Weaveworks Policy Validator
+on:
+  pull_request:
+    branches: [ main, dev ]
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: weaveworks/weave-action@v1
+        with:
+          path: ./                    # entites to scan
+          policies-path: ./policies   # policies path
+          remediate: true             # enable auto remediation
+
+```
+</details>
+
+Allow creating PRs permission for Github actions from the repository settings.
 
   ![settings](imgs/violation5.png)
 
-The repository structure should be something like the one below
+The repository structure should be something like the one below:
 
   ```bash
     .
@@ -59,40 +81,70 @@ The repository structure should be something like the one below
 
 This will validate the repository entites in the commit time by using the CI.
 
-Create new branch from the repository and add the [Violating Service](./violating-service.yaml)
-to this path `clusters/my-cluster/violating-service.yaml` then create a pull request with this branch against `main`
+Create new branch from the repository and add the Violating Service
+to this path `clusters/my-cluster/violating-service.yaml` then create a pull request with this branch against `main`.
+
+<details>
+  <summary>violating-service.yaml - Click to expand .. </summary>
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+```
+</details>
 
 
-Once the PR is created the Weave Policy Validator Github Action will start checking for violations and attempt to fix it
+Once the PR is created the Weave Policy Validator Github Action will start checking for violations and attempt to fix it.
   
   ![violation](./imgs/violation1.png)
 
-A report will be generated to make it easy to view the violations
+A report will be generated to make it easy to view the violations.
 
   ![report](./imgs/violation2.png)
 
-Also a remediation pull request will created to fix the violations that will require the user review
+Also a remediation pull request will created to fix the violations that will require the user review.
 
   ![pull_request](./imgs/violation3.png)
 
 
 ### Policy Agent validation
 
-If a file sneaked somehow into the repository to the cluster, then the Policy Agent's admission controller will stop it
+If a file sneaked somehow into the repository to the cluster, then the Policy Agent's admission controller will stop it.
 
-Go ahead and push the file `clusters/my-cluster/violating-service.yaml` directly into `main` to skip the CI checks
+Go ahead and push the file `clusters/my-cluster/violating-service.yaml` directly into `main` to skip the CI checks.
 
-The Policy Agent's admission controller will reject the creation of the service causing the Flux reconciliation to fail with the following error and the violating service will not be applied to the cluster
+The Policy Agent's admission controller will reject the creation of the service causing the Flux reconciliation to fail with the following error and the violating service will not be applied to the cluster.
 
   ![flux reconcile](./imgs/violation4.png)
 
 
 ## Tear down
 
-Remove the violating service from the repository
+Remove the violating service from the repository.
 
-Remove the policies directory and the workflow directory from the repository
+Remove the policies directory and the workflow directory from the repository.
 
-Remove the policy agent files (HelmRepository, HelmRelease, Policies) from the repository
+Remove the policy agent files (HelmRepository, HelmRelease, Policies) from the repository.
 
-Wait/Trigger flux reconcillation
+Wait/Trigger flux reconcillation.
