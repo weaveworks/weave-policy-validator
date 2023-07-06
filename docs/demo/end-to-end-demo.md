@@ -7,7 +7,7 @@
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [Policy Agent](https://github.com/weaveworks/policy-agent/blob/dev/docs/getting-started.md)
 - [Weave Policy Validator](https://github.com/weaveworks/weave-policy-validator/blob/main/README.md)
-- Violating Service
+- Violating Deployment
 
 
 ## Configurations
@@ -81,11 +81,11 @@ The repository structure should be something like the one below:
 
 This will validate the repository entites in the commit time by using the CI.
 
-Create new branch from the repository and add the Violating Service
-to this path `clusters/my-cluster/violating-service.yaml` then create a pull request with this branch against `main`.
+Create new branch from the repository and add the Violating Deployment
+to this path `clusters/my-cluster/violating-deployment.yaml` then create a pull request with this branch against `main`.
 
 <details>
-  <summary>violating-service.yaml - Click to expand .. </summary>
+  <summary>violating-deployment.yaml - Click to expand .. </summary>
 
 ```yaml
 apiVersion: apps/v1
@@ -132,16 +132,16 @@ Also a remediation pull request will created to fix the violations that will req
 
 If a file sneaked somehow into the repository to the cluster, then the Policy Agent's admission controller will stop it.
 
-Go ahead and push the file `clusters/my-cluster/violating-service.yaml` directly into `main` to skip the CI checks.
+Go ahead and push the file `clusters/my-cluster/violating-deployment.yaml` directly into `main` to skip the CI checks.
 
-The Policy Agent's admission controller will reject the creation of the service causing the Flux reconciliation to fail with the following error and the violating service will not be applied to the cluster.
+The Policy Agent's admission controller will reject the creation of the deployment causing the Flux reconciliation to fail with the following error and the violating deployment will not be applied to the cluster.
 
   ![flux reconcile](./imgs/violation4.png)
 
 
 ## Tear down
 
-Remove the violating service from the repository.
+Remove the violating deployment from the repository.
 
 Remove the policies directory and the workflow directory from the repository.
 
