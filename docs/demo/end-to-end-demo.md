@@ -16,6 +16,30 @@ Install the [Policy Agent](https://github.com/weaveworks/policy-agent/blob/dev/d
 
 Copy the [policies](https://github.com/weaveworks/policy-agent/tree/master/policies) to the root of the repository to be used by the commit time validation.
 
+Create a kustomization inside your cluster directory to install the policies to be used by the Policy Agent in the runtime.
+
+<details>
+  <summary>policies.yaml - Click to expand .. </summary>
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: policies
+  namespace: flux-system
+spec:
+  interval: 10m
+  targetNamespace: default
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: "./policies"
+  prune: true
+  timeout: 1m
+```
+</details>
+
+
 Copy the Weave Policy Validator [Github Action](./weave-policy-validator-gh-action.yml) to your repository under the workflows ex: `.github/workflows/weave-policy-validator-gh-action.yml`
 
 <details>
